@@ -19,6 +19,7 @@
 }
 
 @property (nonatomic, strong) MMNNote *note;
+@property (nonatomic, readonly) BOOL isNew;
 @property (nonatomic, copy) void (^dismissBlock)(void);
 
 // The designated initializer.
@@ -26,5 +27,11 @@
 - (id)initForNewNote:(BOOL)isNew;
 
 - (IBAction)showTagsPicker:(id)sender;
+
+// When the "background" is tapped, hide the keyboard
+- (IBAction)backgroundTapped:(id)sender;
+
+// Change in the note title field, update the view title
+- (IBAction)titleFieldChanged:(id)sender;
 
 @end

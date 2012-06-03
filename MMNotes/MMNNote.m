@@ -31,7 +31,7 @@ const int MMNNoteMaxDisplayTextLength = 20;
         [dateFormatter setDateStyle:NSDateFormatterShortStyle];
     }
     
-    return [NSString stringWithFormat:@"[%@]", [dateFormatter stringFromDate:[self dateModified]]];
+    return [NSString stringWithFormat:@"(%@)", [dateFormatter stringFromDate:[self dateModified]]];
 }
 
 - (NSString *)displayText {

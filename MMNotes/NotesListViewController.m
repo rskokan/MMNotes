@@ -48,7 +48,7 @@
             case NotesListViewControllerModeNotesForTag: {
                 [[self navigationItem] setLeftBarButtonItem:nil];
                 [[self navigationItem] setRightBarButtonItem:nil];
-                title = [NSString stringWithFormat:@"Notes for tag %@", [tag name]];
+                title = [NSString stringWithFormat:@"Notes tagged %@", [tag name]];
             }
                 break;
                 

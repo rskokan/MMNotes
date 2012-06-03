@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 radek@skokan.name. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "NoteDetailViewController.h"
 #import "MMNDataStore.h"
 #import "MMNNote.h"
@@ -17,11 +18,12 @@
 
 @implementation NoteDetailViewController
 
-@synthesize note, dismissBlock;
+@synthesize note, dismissBlock, isNew;
 
-- (id)initForNewNote:(BOOL)isNew {
+- (id)initForNewNote:(BOOL)new {
     self = [super initWithNibName:@"NoteDetailViewController" bundle:nil];
     if (self) {
+        isNew = new;
         if (isNew) {
             UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
                                          initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -38,6 +40,10 @@
     }
     
     return self;
+}
+
+- (id)init {
+    @throw [NSException exceptionWithName:@"Wrong initializer" reason:@"Use initForNewNote:" userInfo:nil];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -57,7 +63,8 @@
 
 - (void)setNote:(MMNNote *)n {
     note = n;
-    [[self navigationItem] setTitle:[note displayText]];
+    if (!isNew)
+        [[self navigationItem] setTitle:[note displayText]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -101,6 +108,10 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    [[bodyField layer] setBorderWidth:1];
+    [[bodyField layer] setBorderColor:[[UIColor grayColor] CGColor]];
+    
     // TODO: set some better background color for iPad?
 }
 
@@ -123,6 +134,14 @@
     TagsListViewController *tagsListVC = [[TagsListViewController alloc] initWithMode:TagsListViewControllerModeSelect];
     [tagsListVC setNote:note];
     [[self navigationController] pushViewController:tagsListVC animated:YES];
+}
+
+- (IBAction)backgroundTapped:(id)sender {
+    [[self view] endEditing:YES];
+}
+
+- (IBAction)titleFieldChanged:(id)sender {
+    [[self navigationItem] setTitle:[titleField text]];
 }
 
 // Hide keyboard when return is pressed

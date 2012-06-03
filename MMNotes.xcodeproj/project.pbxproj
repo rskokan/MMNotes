@@ -24,6 +24,7 @@
 		BF158AB015768CD200CDBE21 /* NoteDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF158AAE15768CD200CDBE21 /* NoteDetailViewController.xib */; };
 		BF158AB315777EB100CDBE21 /* TagsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158AB215777EB100CDBE21 /* TagsListViewController.m */; };
 		BF9A49F51578EB7900EC2169 /* TagEditStyleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */; };
+		BFE49649157BB7F00039B213 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFE49648157BB7EF0039B213 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		BF158AB215777EB100CDBE21 /* TagsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsListViewController.m; sourceTree = "<group>"; };
 		BF9A49F31578EB7900EC2169 /* TagEditStyleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagEditStyleCell.h; sourceTree = "<group>"; };
 		BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagEditStyleCell.m; sourceTree = "<group>"; };
+		BFE49648157BB7EF0039B213 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFE49649157BB7F00039B213 /* QuartzCore.framework in Frameworks */,
 				BF158A8D15765FEF00CDBE21 /* CoreData.framework in Frameworks */,
 				BF158A671576273400CDBE21 /* UIKit.framework in Frameworks */,
 				BF158A691576273400CDBE21 /* Foundation.framework in Frameworks */,
@@ -93,6 +96,7 @@
 		BF158A651576273400CDBE21 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BFE49648157BB7EF0039B213 /* QuartzCore.framework */,
 				BF158A8C15765FEF00CDBE21 /* CoreData.framework */,
 				BF158A661576273400CDBE21 /* UIKit.framework */,
 				BF158A681576273400CDBE21 /* Foundation.framework */,
