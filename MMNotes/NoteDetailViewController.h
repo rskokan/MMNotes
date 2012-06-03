@@ -10,7 +10,7 @@
 
 @class MMNNote;
 
-@interface NoteDetailViewController : UIViewController <UITextFieldDelegate>
+@interface NoteDetailViewController : UIViewController <UITextFieldDelegate, UIAlertViewDelegate>
 {
     
     __weak IBOutlet UITextField *titleField;

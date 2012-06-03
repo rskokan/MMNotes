@@ -57,12 +57,30 @@
 }
 
 - (void)cancel:(id)sender {
-    if (![note isEmpty]) {
-        
-    }
+    // Confirmation if the note has some contents
+    [note setTitle:[titleField text]];
+    [note setBody:[bodyField text]];
     
-    [[MMNDataStore sharedStore] removeNote:note];
-    [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
+    if ([note isEmpty]) {
+        // Discard the new note only when it is empty
+        [[MMNDataStore sharedStore] removeNote:note];
+        [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
+    } else {
+        // Otherwise ask for confirmation
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Discard note" message:@"The note is not empty. Do you want to discard it?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Discard", nil];
+        [alert show];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        // The user confirmed to discard the new not empty note
+        NSLog(@"The user confirmed to discard the new not empty note");
+        [[MMNDataStore sharedStore] removeNote:note];
+        [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
+    } else {
+        NSLog(@"The user canceled discarding the note");
+    }
 }
 
 - (void)setNote:(MMNNote *)n {

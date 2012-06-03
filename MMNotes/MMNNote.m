@@ -35,8 +35,6 @@ const int MMNNoteMaxDisplayTextLength = 20;
 }
 
 - (NSString *)displayText {
-     
-    
     if ([[self title] length] > 0)
         return [self title];
     
@@ -57,8 +55,10 @@ const int MMNNoteMaxDisplayTextLength = 20;
     return [[self title] length] == 0 && [[self body] length] == 0 && [[self attachments] count] == 0;
 }
 
-- (NSString *)tagsAsOrderedString {
-    return nil;
+- (BOOL)isEmpty {
+    return ([[[self title] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
+    && ([[[self body] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
+    && ([[self attachments] count] == 0);
 }
 
 // TODO: Add some thumbnail preparation like in BNRItem.m

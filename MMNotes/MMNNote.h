@@ -28,8 +28,8 @@ extern const int MMNNoteMaxDisplayTextLength;
 // beginning of the note's body. If the body is empty, it contains the dateModified.
 @property (nonatomic, readonly, strong) NSString *displayText;
 
-// Returns the tags associated with this note as a string. The tags are ordered by their order property.
-- (NSString *)tagsAsOrderedString;
+// Returns true if the note has no title, no body and no attachments
+- (BOOL)isEmpty;
 
 @end
 
