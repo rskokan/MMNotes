@@ -155,10 +155,11 @@
         // Only displaying tags, no editing nor adding
         cell = [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell"];
         if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UITableViewCell"];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"UITableViewCell"];
         }
         MMNTag *tag = [[[MMNDataStore sharedStore] allTags] objectAtIndex:[indexPath row]];
         [[cell textLabel] setText:[tag name]];
+        [[cell detailTextLabel] setText:[NSString stringWithFormat:@"%d", [[tag notes] count]]];
         
         // Checkmarks for tag select mode (assigning tags to a note)
         if (mode == TagsListViewControllerModeSelect) {
