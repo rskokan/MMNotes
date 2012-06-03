@@ -129,7 +129,7 @@
         // Insert as the first item
         order = [[[allNotes objectAtIndex:0] order] doubleValue] - 1.0;
     }
-    NSLog(@"Adding after %d notes, order = %.2f", [allNotes count], order);
+    NSLog(@"New note, adding before %d notes, order = %.2f", [allNotes count], order);
     
     MMNNote *note = [NSEntityDescription insertNewObjectForEntityForName:@"MMNNote"
                                                   inManagedObjectContext:ctx];
@@ -148,7 +148,7 @@
         // Insert as the first item
         order = [[[allTags objectAtIndex:0] order] doubleValue] - 1.0;
     }
-    NSLog(@"Adding after %d tags, order = %.2f", [allTags count], order);
+    NSLog(@"New tag, adding before %d tags, order = %.2f", [allTags count], order);
     
     MMNTag *tag = [NSEntityDescription insertNewObjectForEntityForName:@"MMNTag"
                                                 inManagedObjectContext:ctx];

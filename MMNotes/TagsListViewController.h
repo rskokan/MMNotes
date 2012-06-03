@@ -21,7 +21,8 @@ typedef enum {
 // 
 @interface TagsListViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
 {
-
+    // The index path of the first cell in a table (row 0, section 0)
+    NSIndexPath *kMMNIndexPathZero;
 }
 
 @property (nonatomic) TagsListViewControllerMode mode;

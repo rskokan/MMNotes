@@ -21,6 +21,7 @@
 - (id)initWithMode:(TagsListViewControllerMode)m {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        kMMNIndexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
         [self setMode:m];
         NSString *title;
         if (m == TagsListViewControllerModeSelect) {
@@ -173,11 +174,12 @@
 
 // Confirms adding of newTag
 - (void)confirmAddingNewTag:(id)sender {
-    NSIndexPath *indexPathZero = [NSIndexPath indexPathForRow:0 inSection:0]; // Always adding to the zeroth cell
-    TagEditStyleCell *cellZero = (TagEditStyleCell *)[[self tableView] cellForRowAtIndexPath:indexPathZero]; // The zeroth cell should be the TagEditStyleCell when adding
+    TagEditStyleCell *cellZero = (TagEditStyleCell *)[[self tableView] cellForRowAtIndexPath:kMMNIndexPathZero]; // The zeroth cell should be the TagEditStyleCell when adding
     NSString *trimmedTagText = [[cellZero tagName] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if ([trimmedTagText length] == 0)
+    if ([trimmedTagText length] == 0) {
         [self cancelAddingNewTag:sender];
+        return;
+    }
     
     [currentTag setName:trimmedTagText];
     [[MMNDataStore sharedStore] ensureUniqueTagName:currentTag];
@@ -188,18 +190,20 @@
 }
 
 // Cancels adding of the newTag, which is in progress.
+// Removes the zeroth row from the table with the new tag (that has been canceled).
+// Other rows shouln't be changed so no need to reload the entire table.
 - (void)cancelAddingNewTag:(id)sender {
     [[MMNDataStore sharedStore] removeTag:[self currentTag]];
     [self setMode:TagsListViewControllerModeView];
+    [[self tableView] endEditing:YES];
+    [[self tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObject:kMMNIndexPathZero] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self displayStandardModeBarButtonItems];
-    [[self tableView] reloadData];
 }
 
 - (IBAction)addNewTag:(id)sender {
     [self setMode:TagsListViewControllerModeAdd];
     [self displayAddingTagModeBarButtonItems];
-    NSIndexPath *indexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
-    [[self tableView] insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPathZero] withRowAnimation:UITableViewRowAnimationAutomatic];    
+    [[self tableView] insertRowsAtIndexPaths:[NSArray arrayWithObject:kMMNIndexPathZero] withRowAnimation:UITableViewRowAnimationAutomatic];    
     [self setCurrentTag:[[MMNDataStore sharedStore] createTag]];
 }
 
