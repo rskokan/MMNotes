@@ -1,0 +1,259 @@
+//
+//  MMNDataStore.m
+//  MMNotes
+//
+//  Created by Radek Skokan on 5/30/12.
+//  Copyright (c) 2012 radek@skokan.name. All rights reserved.
+//
+
+#import <CoreData/CoreData.h>
+#import "MMNDataStore.h"
+#import "MMNNote.h"
+#import "MMNTag.h"
+
+
+
+@implementation MMNDataStore
+
++ (MMNDataStore *)sharedStore {
+    static MMNDataStore * sharedStore = nil;
+    
+    if (!sharedStore) {
+        sharedStore = [[super allocWithZone:nil] init];
+    }
+    
+    return sharedStore;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return [self sharedStore];
+}
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        // Read in MMNotes.xcdatamodeld
+        model = [NSManagedObjectModel mergedModelFromBundles:nil];
+        NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+        
+        NSURL *storeURL = [NSURL fileURLWithPath:[self dbArchivePath]];
+        NSError *error = nil;
+        
+        if (![psc addPersistentStoreWithType:NSSQLiteStoreType
+                               configuration:nil
+                                         URL:storeURL
+                                     options:nil
+                                       error:&error]) {
+            [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+        }
+        
+        ctx = [[NSManagedObjectContext alloc] init];
+        [ctx setPersistentStoreCoordinator:psc];
+        [ctx setUndoManager:nil];
+        
+        [self loadAllData];
+    }
+    
+    return self;
+}
+
+- (NSString *)dbArchivePath {
+    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [documentDirectories objectAtIndex:0];
+    return [documentDirectory stringByAppendingPathComponent:@"store.data"];
+}
+
+
+- (BOOL)saveChanges {
+    NSError *err;
+    BOOL success = [ctx save:&err];
+    if (!success) {
+        NSLog(@"Error saving data: %@", [err localizedDescription]);
+    }
+    
+    return success;
+}
+
+// Loads all Notes and Tags from DB if not already loaded
+- (void)loadAllData {
+    if (!allNotes)
+        allNotes = [[NSMutableArray alloc] initWithArray:[self fetchAllEntitiesWithName:@"MMNNote"]];
+    
+    if (!allTags)
+        allTags = [[NSMutableArray alloc] initWithArray:[self fetchAllEntitiesWithName:@"MMNTag"]];
+}
+
+- (NSArray *)fetchAllEntitiesWithName:(NSString *)name {
+    NSFetchRequest *req = [[NSFetchRequest alloc] init];
+    NSEntityDescription *ent = [[model entitiesByName] objectForKey:name];
+    [req setEntity:ent];
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
+    [req setSortDescriptors:[NSArray arrayWithObject:sort]];
+    
+    NSError *err;
+    NSArray *res = [ctx executeFetchRequest:req error:&err];
+    if (!res) {
+        [NSException raise:@"Fetch failed" format:@"Entity: %@, reason: %@", name, [err localizedDescription]];
+    }
+    
+    return res;
+}
+
+- (NSArray *)allNotes {
+    return allNotes;
+}
+
+- (NSArray *)favoritedNotes {
+    static NSPredicate *favoriteNotesPredicate = nil;
+    if (!favoriteNotesPredicate) {
+        favoriteNotesPredicate = [NSPredicate predicateWithFormat:@"isFavorite == TRUE"];
+    }
+    
+    return [allNotes filteredArrayUsingPredicate:favoriteNotesPredicate];
+}
+
+- (NSArray *)notesTaggedWith:(MMNTag *)aTag {
+    NSPredicate *notesWithTagPredicate = [NSPredicate predicateWithFormat:@"%@ IN SELF.tags", aTag];
+    return [allNotes filteredArrayUsingPredicate:notesWithTagPredicate];
+}
+
+- (NSArray *)allTags {
+    return allTags;
+}
+
+- (MMNNote *)createNote {
+    double order;
+    if ([allNotes count] == 0) {
+        order = 1.0;
+    } else {
+        // Insert as the first item
+        order = [[[allNotes objectAtIndex:0] order] doubleValue] - 1.0;
+    }
+    NSLog(@"Adding after %d notes, order = %.2f", [allNotes count], order);
+    
+    MMNNote *note = [NSEntityDescription insertNewObjectForEntityForName:@"MMNNote"
+                                                  inManagedObjectContext:ctx];
+    [note setOrder:[NSNumber numberWithDouble:order]];
+    [note setDateModified:[NSDate date]];
+    
+    [allNotes insertObject:note atIndex:0];
+    return note;
+}
+
+- (MMNTag *)createTag {
+    double order;
+    if ([allTags count] == 0) {
+        order = 1.0;
+    } else {
+        // Insert as the first item
+        order = [[[allTags objectAtIndex:0] order] doubleValue] - 1.0;
+    }
+    NSLog(@"Adding after %d tags, order = %.2f", [allTags count], order);
+    
+    MMNTag *tag = [NSEntityDescription insertNewObjectForEntityForName:@"MMNTag"
+                                                inManagedObjectContext:ctx];
+    [tag setOrder:[NSNumber numberWithDouble:order]];
+    [tag setDateModified:[NSDate date]];
+    
+    [allTags insertObject:tag atIndex:0];
+    return tag;
+}
+
+- (void)removeNote:(MMNNote *)note {
+    // TODO: Remove all associated attachments
+    [ctx deleteObject:note];
+    [allNotes removeObjectIdenticalTo:note];
+}
+
+- (void)removeTag:(MMNTag *)tag {
+    [ctx deleteObject:tag];
+    [allTags removeObjectIdenticalTo:tag];
+}
+
+- (void)removeTags:(NSArray *)tags {
+    for (MMNTag *tag in tags) {
+        [self removeTag:tag];
+    }
+}
+
+// TODO: eliminate copy pastes in similar Notes and Tags methods...
+- (void)moveNoteAtIndex:(int)from toIndex:(int)to {
+    if (from == to) {
+        return;
+    }
+    
+    MMNNote *note = [allNotes objectAtIndex:from];
+    [allNotes removeObjectAtIndex:from];
+    [allNotes insertObject:note atIndex:to];
+    
+    double lowerBound = 0.0;
+    // Is there an object before it in the array?
+    if (to > 0) {
+        lowerBound = [[[allNotes objectAtIndex:to - 1] order] doubleValue];
+    } else {
+        lowerBound = [[[allNotes objectAtIndex:1] order]  doubleValue] - 2.0;
+    }
+    
+    double upperBound = 0.0;
+    // Is there an object after in the array?
+    if (to < [allNotes count] - 1) {
+        upperBound = [[[allNotes objectAtIndex:to + 1] order]  doubleValue];
+    } else {
+        upperBound = [[[allNotes objectAtIndex:to - 1] order]  doubleValue] + 2.0;
+    }
+    
+    double newOrderValue = (lowerBound + upperBound) / 2.0;
+    
+    NSLog(@"Moving note to order %f", newOrderValue);
+    [note setOrder:[NSNumber numberWithDouble:newOrderValue]];
+}
+
+// TODO: eliminate copy pastes in similar Notes and Tags methods...
+- (void)moveTagAtIndex:(int)from toIndex:(int)to {
+    if (from == to) {
+        return;
+    }
+    
+    MMNTag *tag = [allTags objectAtIndex:from];
+    [allTags removeObjectAtIndex:from];
+    [allTags insertObject:tag atIndex:to];
+    
+    double lowerBound = 0.0;
+    // Is there an object before it in the array?
+    if (to > 0) {
+        lowerBound = [[[allTags objectAtIndex:to - 1] order] doubleValue];
+    } else {
+        lowerBound = [[[allTags objectAtIndex:1] order]  doubleValue] - 2.0;
+    }
+    
+    double upperBound = 0.0;
+    // Is there an object after in the array?
+    if (to < [allTags count] - 1) {
+        upperBound = [[[allTags objectAtIndex:to + 1] order]  doubleValue];
+    } else {
+        upperBound = [[[allTags objectAtIndex:to - 1] order]  doubleValue] + 2.0;
+    }
+    
+    double newOrderValue = (lowerBound + upperBound) / 2.0;
+    
+    NSLog(@"Moving tag to order %f", newOrderValue);
+    [tag setOrder:[NSNumber numberWithDouble:newOrderValue]];
+}
+
+- (void)ensureUniqueTagName:(MMNTag *)checkedTag {
+    NSString *checkedName = [checkedTag name];
+    for (MMNTag *otherTag in allTags) {
+        NSString *otherName = [otherTag name];
+        if ([[checkedName lowercaseString] isEqualToString:[otherName lowercaseString]] && checkedTag != otherTag) {
+            NSLog(@"Found older tag with same name: %@; removing new tag", otherTag);
+            [otherTag setOrder:[checkedTag order]];
+            [allTags removeObject:otherTag];
+            [allTags insertObject:otherTag atIndex:[allTags indexOfObject:checkedTag]];
+            [self removeTag:checkedTag];
+            break;
+        }
+    }
+}
+
+
+@end

@@ -7,6 +7,9 @@
 //
 
 #import "MMNAppDelegate.h"
+#import "NotesListViewController.h"
+#import "TagsListViewController.h"
+#import "MMNDataStore.h"
 
 @implementation MMNAppDelegate
 
@@ -16,6 +19,21 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+
+    TagsListViewController *tagsListVC = [[TagsListViewController alloc] initWithMode:TagsListViewControllerModeView];
+    UINavigationController *tagsNavVC = [[UINavigationController alloc] initWithRootViewController:tagsListVC];
+    
+    NotesListViewController *notesListVC = [[NotesListViewController alloc] initWithMode:NotesListViewControllerModeAllNotes];
+    UINavigationController *notesNavVC = [[UINavigationController alloc] initWithRootViewController:notesListVC];
+    
+    NotesListViewController *favsListVC = [[NotesListViewController alloc] initWithMode:NotesListViewControllerModeFavoriteNotes];
+    UINavigationController *favsNavVC = [[UINavigationController alloc] initWithRootViewController:favsListVC];
+    
+    NSArray *vcs = [NSArray arrayWithObjects:tagsNavVC, notesNavVC, favsNavVC, nil];
+    UITabBarController *tabVC = [[UITabBarController alloc] init];
+    [tabVC setViewControllers:vcs];
+    [[self window] setRootViewController:tabVC];
+    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
@@ -31,6 +49,9 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    if (![[MMNDataStore sharedStore] saveChanges])
+        NSLog(@"Error saving app data");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

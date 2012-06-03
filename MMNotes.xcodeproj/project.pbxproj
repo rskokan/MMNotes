@@ -13,6 +13,17 @@
 		BF158A711576273400CDBE21 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BF158A6F1576273400CDBE21 /* InfoPlist.strings */; };
 		BF158A731576273400CDBE21 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158A721576273400CDBE21 /* main.m */; };
 		BF158A771576273400CDBE21 /* MMNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158A761576273400CDBE21 /* MMNAppDelegate.m */; };
+		BF158A8215763E7700CDBE21 /* NotesListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158A8115763E7700CDBE21 /* NotesListViewController.m */; };
+		BF158A8515764D4400CDBE21 /* MMNotes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BF158A8315764D4400CDBE21 /* MMNotes.xcdatamodeld */; };
+		BF158A8815764FFE00CDBE21 /* MMNDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158A8715764FFE00CDBE21 /* MMNDataStore.m */; };
+		BF158A8D15765FEF00CDBE21 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF158A8C15765FEF00CDBE21 /* CoreData.framework */; };
+		BF158AA215766B6200CDBE21 /* MMNTag.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158AA115766B6200CDBE21 /* MMNTag.m */; };
+		BF158AA515766B6300CDBE21 /* MMNAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158AA415766B6300CDBE21 /* MMNAttachment.m */; };
+		BF158AA815766B6300CDBE21 /* MMNNote.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158AA715766B6300CDBE21 /* MMNNote.m */; };
+		BF158AAF15768CD200CDBE21 /* NoteDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158AAD15768CD200CDBE21 /* NoteDetailViewController.m */; };
+		BF158AB015768CD200CDBE21 /* NoteDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF158AAE15768CD200CDBE21 /* NoteDetailViewController.xib */; };
+		BF158AB315777EB100CDBE21 /* TagsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158AB215777EB100CDBE21 /* TagsListViewController.m */; };
+		BF9A49F51578EB7900EC2169 /* TagEditStyleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,12 +31,31 @@
 		BF158A661576273400CDBE21 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BF158A681576273400CDBE21 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BF158A6A1576273400CDBE21 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		BF158A6E1576273400CDBE21 /* MMNotes-Info.plist */ = {isa = PBXFileReference; path = "MMNotes-Info.plist"; sourceTree = "<group>"; };
+		BF158A6E1576273400CDBE21 /* MMNotes-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MMNotes-Info.plist"; sourceTree = "<group>"; };
 		BF158A701576273400CDBE21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		BF158A721576273400CDBE21 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		BF158A741576273400CDBE21 /* MMNotes-Prefix.pch */ = {isa = PBXFileReference; path = "MMNotes-Prefix.pch"; sourceTree = "<group>"; };
-		BF158A751576273400CDBE21 /* MMNAppDelegate.h */ = {isa = PBXFileReference; path = MMNAppDelegate.h; sourceTree = "<group>"; };
+		BF158A741576273400CDBE21 /* MMNotes-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MMNotes-Prefix.pch"; sourceTree = "<group>"; };
+		BF158A751576273400CDBE21 /* MMNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMNAppDelegate.h; sourceTree = "<group>"; };
 		BF158A761576273400CDBE21 /* MMNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMNAppDelegate.m; sourceTree = "<group>"; };
+		BF158A8015763E7700CDBE21 /* NotesListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotesListViewController.h; sourceTree = "<group>"; };
+		BF158A8115763E7700CDBE21 /* NotesListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotesListViewController.m; sourceTree = "<group>"; };
+		BF158A8415764D4400CDBE21 /* MMNotes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MMNotes.xcdatamodel; sourceTree = "<group>"; };
+		BF158A8615764FFE00CDBE21 /* MMNDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMNDataStore.h; sourceTree = "<group>"; };
+		BF158A8715764FFE00CDBE21 /* MMNDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMNDataStore.m; sourceTree = "<group>"; };
+		BF158A8C15765FEF00CDBE21 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		BF158AA015766B6200CDBE21 /* MMNTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMNTag.h; sourceTree = "<group>"; };
+		BF158AA115766B6200CDBE21 /* MMNTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMNTag.m; sourceTree = "<group>"; };
+		BF158AA315766B6200CDBE21 /* MMNAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMNAttachment.h; sourceTree = "<group>"; };
+		BF158AA415766B6300CDBE21 /* MMNAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMNAttachment.m; sourceTree = "<group>"; };
+		BF158AA615766B6300CDBE21 /* MMNNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMNNote.h; sourceTree = "<group>"; };
+		BF158AA715766B6300CDBE21 /* MMNNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMNNote.m; sourceTree = "<group>"; };
+		BF158AAC15768CD200CDBE21 /* NoteDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteDetailViewController.h; sourceTree = "<group>"; };
+		BF158AAD15768CD200CDBE21 /* NoteDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoteDetailViewController.m; sourceTree = "<group>"; };
+		BF158AAE15768CD200CDBE21 /* NoteDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteDetailViewController.xib; sourceTree = "<group>"; };
+		BF158AB115777EB100CDBE21 /* TagsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsListViewController.h; sourceTree = "<group>"; };
+		BF158AB215777EB100CDBE21 /* TagsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsListViewController.m; sourceTree = "<group>"; };
+		BF9A49F31578EB7900EC2169 /* TagEditStyleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagEditStyleCell.h; sourceTree = "<group>"; };
+		BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagEditStyleCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF158A8D15765FEF00CDBE21 /* CoreData.framework in Frameworks */,
 				BF158A671576273400CDBE21 /* UIKit.framework in Frameworks */,
 				BF158A691576273400CDBE21 /* Foundation.framework in Frameworks */,
 				BF158A6B1576273400CDBE21 /* CoreGraphics.framework in Frameworks */,
@@ -62,6 +93,7 @@
 		BF158A651576273400CDBE21 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF158A8C15765FEF00CDBE21 /* CoreData.framework */,
 				BF158A661576273400CDBE21 /* UIKit.framework */,
 				BF158A681576273400CDBE21 /* Foundation.framework */,
 				BF158A6A1576273400CDBE21 /* CoreGraphics.framework */,
@@ -72,6 +104,9 @@
 		BF158A6C1576273400CDBE21 /* MMNotes */ = {
 			isa = PBXGroup;
 			children = (
+				BF158AAB15767E5800CDBE21 /* VC */,
+				BF158AAA15767E3B00CDBE21 /* Store */,
+				BF158AA915767E3300CDBE21 /* Model */,
 				BF158A751576273400CDBE21 /* MMNAppDelegate.h */,
 				BF158A761576273400CDBE21 /* MMNAppDelegate.m */,
 				BF158A6D1576273400CDBE21 /* Supporting Files */,
@@ -88,6 +123,45 @@
 				BF158A741576273400CDBE21 /* MMNotes-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BF158AA915767E3300CDBE21 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BF158AA615766B6300CDBE21 /* MMNNote.h */,
+				BF158AA715766B6300CDBE21 /* MMNNote.m */,
+				BF158AA315766B6200CDBE21 /* MMNAttachment.h */,
+				BF158AA415766B6300CDBE21 /* MMNAttachment.m */,
+				BF158AA015766B6200CDBE21 /* MMNTag.h */,
+				BF158AA115766B6200CDBE21 /* MMNTag.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		BF158AAA15767E3B00CDBE21 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				BF158A8315764D4400CDBE21 /* MMNotes.xcdatamodeld */,
+				BF158A8615764FFE00CDBE21 /* MMNDataStore.h */,
+				BF158A8715764FFE00CDBE21 /* MMNDataStore.m */,
+			);
+			name = Store;
+			sourceTree = "<group>";
+		};
+		BF158AAB15767E5800CDBE21 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				BF158A8015763E7700CDBE21 /* NotesListViewController.h */,
+				BF158A8115763E7700CDBE21 /* NotesListViewController.m */,
+				BF158AAC15768CD200CDBE21 /* NoteDetailViewController.h */,
+				BF158AAD15768CD200CDBE21 /* NoteDetailViewController.m */,
+				BF158AAE15768CD200CDBE21 /* NoteDetailViewController.xib */,
+				BF158AB115777EB100CDBE21 /* TagsListViewController.h */,
+				BF158AB215777EB100CDBE21 /* TagsListViewController.m */,
+				BF9A49F31578EB7900EC2169 /* TagEditStyleCell.h */,
+				BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */,
+			);
+			name = VC;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF158A711576273400CDBE21 /* InfoPlist.strings in Resources */,
+				BF158AB015768CD200CDBE21 /* NoteDetailViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,6 +230,15 @@
 			files = (
 				BF158A731576273400CDBE21 /* main.m in Sources */,
 				BF158A771576273400CDBE21 /* MMNAppDelegate.m in Sources */,
+				BF158A8215763E7700CDBE21 /* NotesListViewController.m in Sources */,
+				BF158A8515764D4400CDBE21 /* MMNotes.xcdatamodeld in Sources */,
+				BF158A8815764FFE00CDBE21 /* MMNDataStore.m in Sources */,
+				BF158AA215766B6200CDBE21 /* MMNTag.m in Sources */,
+				BF158AA515766B6300CDBE21 /* MMNAttachment.m in Sources */,
+				BF158AA815766B6300CDBE21 /* MMNNote.m in Sources */,
+				BF158AAF15768CD200CDBE21 /* NoteDetailViewController.m in Sources */,
+				BF158AB315777EB100CDBE21 /* TagsListViewController.m in Sources */,
+				BF9A49F51578EB7900EC2169 /* TagEditStyleCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,7 +307,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MMNotes/MMNotes-Prefix.pch";
 				INFOPLIST_FILE = "MMNotes/MMNotes-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -234,7 +320,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MMNotes/MMNotes-Prefix.pch";
 				INFOPLIST_FILE = "MMNotes/MMNotes-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -258,8 +346,22 @@
 				BF158A7C1576273400CDBE21 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		BF158A8315764D4400CDBE21 /* MMNotes.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				BF158A8415764D4400CDBE21 /* MMNotes.xcdatamodel */,
+			);
+			currentVersion = BF158A8415764D4400CDBE21 /* MMNotes.xcdatamodel */;
+			path = MMNotes.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = BF158A591576273400CDBE21 /* Project object */;
 }
