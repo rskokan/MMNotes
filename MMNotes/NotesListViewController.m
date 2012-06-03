@@ -145,13 +145,14 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         MMNNote *note = [[self actualNotes] objectAtIndex:[indexPath row]];
         [[MMNDataStore sharedStore] removeNote:note];
-        
+        [[MMNDataStore sharedStore] saveChanges];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
     [[MMNDataStore sharedStore] moveNoteAtIndex:[sourceIndexPath row] toIndex:[destinationIndexPath row]];
+    [[MMNDataStore sharedStore] saveChanges];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

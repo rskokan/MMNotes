@@ -89,7 +89,7 @@
     [[self tableView] reloadData];
 }
 
-// In the edit mode, users can cange tag names. So when leaving the edit mode,
+// In the edit mode, users can change tag names. So when leaving the edit mode,
 // we will iterate through all the rows and update the relevant element in the tag store
 - (void)updateDataModelAfterEditing {
     NSMutableArray *tagsToBeRemoved = [NSMutableArray array];
@@ -110,14 +110,11 @@
     }
     
     [[MMNDataStore sharedStore] removeTags:tagsToBeRemoved];
+    [[MMNDataStore sharedStore] saveChanges];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    //TODO: register custom table view cells
-    //    UINib *nib = [UINib nibWithNibName:@"HomepwnerItemCell" bundle:nil];
-    //    [[self tableView] registerNib:nib forCellReuseIdentifier:@"HomepwnerItemCell"];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -172,21 +169,11 @@
     }
     
     return cell;
-    
-    // TODO: Use custom cell
-    //    HomepwnerItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HomepwnerItemCell"];
-    //    [[cell nameLabel] setText:[item itemName]];
-    //    [[cell serialNumberLabel] setText:[item serialNumber]];
-    //    NSString *currencySymbol = [[NSLocale currentLocale] objectForKey:NSLocaleCurrencySymbol];
-    //    [[cell valueLabel] setText:[NSString stringWithFormat:@"%@%d", currencySymbol, [item valueInDollars]]];
-    //    [[cell thumbnailView] setImage:[item thumbnail]];
-    //    [cell setController:self];
-    //    [cell setTableView:tableView];
 }
 
 // Confirms adding of newTag
 - (void)confirmAddingNewTag:(id)sender {
-    NSIndexPath *indexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
+    NSIndexPath *indexPathZero = [NSIndexPath indexPathForRow:0 inSection:0]; // Always adding to the zeroth cell
     TagEditStyleCell *cellZero = (TagEditStyleCell *)[[self tableView] cellForRowAtIndexPath:indexPathZero]; // The zeroth cell should be the TagEditStyleCell when adding
     NSString *trimmedTagText = [[cellZero tagName] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if ([trimmedTagText length] == 0)
@@ -194,6 +181,7 @@
     
     [currentTag setName:trimmedTagText];
     [[MMNDataStore sharedStore] ensureUniqueTagName:currentTag];
+    [[MMNDataStore sharedStore] saveChanges];
     [self setMode:TagsListViewControllerModeView];
     [self displayStandardModeBarButtonItems];
     [[self tableView] reloadData];
@@ -213,17 +201,6 @@
     NSIndexPath *indexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
     [[self tableView] insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPathZero] withRowAnimation:UITableViewRowAnimationAutomatic];    
     [self setCurrentTag:[[MMNDataStore sharedStore] createTag]];
-    
-    
-    
-    //    TagDetailViewController *detailVC = [[TagDetailViewController alloc] initForNewTag:YES];
-    //    [detailVC setTag:newTag];
-    //    [detailVC setDismissBlock:^{
-    //        [[self tableView] reloadData];
-    //    }];
-    //    UINavigationController *navCtrl = [[UINavigationController alloc] initWithRootViewController:detailVC];
-    //    [navCtrl setModalPresentationStyle:UIModalPresentationFormSheet];
-    //    [self presentViewController:navCtrl animated:YES completion:nil];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -232,13 +209,14 @@
         NSArray *tags = [store allTags];
         MMNTag *tag = [tags objectAtIndex:[indexPath row]];
         [store removeTag:tag];
-        
+        [[MMNDataStore sharedStore] saveChanges];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
     [[MMNDataStore sharedStore] moveTagAtIndex:[sourceIndexPath row] toIndex:[destinationIndexPath row]];
+    [[MMNDataStore sharedStore] saveChanges];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -264,13 +242,6 @@
         NotesListViewController *notesListVC = [[NotesListViewController alloc] initWithMode:NotesListViewControllerModeNotesForTag forTag:tag];
         [[self navigationController] pushViewController:notesListVC animated:YES];
     }
-    
-    // TODO
-    //    MMNTag *tag = [[[MMNDataStore sharedStore] allTags] objectAtIndex:[indexPath row]];
-    //    TagDetailViewController *detailVC = [[TagDetailViewController alloc] initForNewTag:NO];
-    //    [detailVC setTag:tag];
-    //    
-    //    [[self navigationController] pushViewController:detailVC animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

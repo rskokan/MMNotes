@@ -57,6 +57,10 @@
 }
 
 - (void)cancel:(id)sender {
+    if (![note isEmpty]) {
+        
+    }
+    
     [[MMNDataStore sharedStore] removeNote:note];
     [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
 }
@@ -102,6 +106,7 @@
     
     [note setTitle:[titleField text]];
     [note setBody:[bodyField text]];
+    [[MMNDataStore sharedStore] saveChanges];
 }
 
 - (void)viewDidLoad
