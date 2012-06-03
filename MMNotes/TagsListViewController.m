@@ -257,6 +257,7 @@
             [note addTagsObject:tag];
             [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
         }
+        [[cell detailTextLabel] setText:[NSString stringWithFormat:@"%d", [[tag notes] count]]];
         
     } else if (mode == TagsListViewControllerModeView) {
         // Through tapping on a tag in the View mode we display notes with the tag
