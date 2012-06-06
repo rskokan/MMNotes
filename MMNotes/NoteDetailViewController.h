@@ -16,6 +16,15 @@
     __weak IBOutlet UITextField *titleField;
     __weak IBOutlet UITextView *bodyField;
     __weak IBOutlet UIButton *tagsButton;
+    
+    // The bar buttom to toggle and indicate in the note detail view whether the note is a favorite
+    UIBarButtonItem *favoriteItem;
+    
+    // The bar buttom to indicate in the note detail view whether the note has a photo attachment
+    UIBarButtonItem *photoItem;
+    
+    // The bar buttom to indicate in the note detail view whether the note has an audio attachment
+    UIBarButtonItem *audioItem;
 }
 
 @property (nonatomic, strong) MMNNote *note;

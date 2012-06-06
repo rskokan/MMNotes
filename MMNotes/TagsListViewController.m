@@ -32,7 +32,9 @@
             [self displayStandardModeBarButtonItems];
         }
         [[self navigationItem] setTitle:title];
-        [self setTitle:title];
+//        [self setTitle:title];
+        [[self tabBarItem] setTitle:@"Tags"];
+        [[self tabBarItem] setImage:[UIImage imageNamed:@"tag_tabbar"]];
     }
     
     return self;

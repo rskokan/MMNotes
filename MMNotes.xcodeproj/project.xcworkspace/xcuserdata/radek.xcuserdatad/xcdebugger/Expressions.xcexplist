@@ -3,6 +3,17 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[NoteDetailViewController toggleFavorite:]:NoteDetailViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "isFavorite">
+            </PersistentString>
+            <PersistentString
+               value = "(NSNumber *)[note isFavorite]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[NotesListViewController tableView:cellForRowAtIndexPath:]:NotesListViewController.m">
          <PersistentStrings>
             <PersistentString

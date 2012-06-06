@@ -35,6 +35,7 @@
                                            UIBarButtonSystemItemAdd target:self action:@selector(addNewNote:)];
                 [[self navigationItem] setRightBarButtonItem:bbiAdd];
                 title = @"Notes";
+                [[self tabBarItem] setImage:[UIImage imageNamed:@"note_tabbar"]];
             }
                 break;
                 
@@ -42,6 +43,7 @@
                 [[self navigationItem] setLeftBarButtonItem:nil];
                 [[self navigationItem] setRightBarButtonItem:nil];
                 title = @"Favorites";
+                [[self tabBarItem] setImage:[UIImage imageNamed:@"star_tabbar"]];
             }
                 break;
                 
@@ -58,7 +60,8 @@
         }
         
         [[self navigationItem] setTitle:title];
-        [self setTitle:title];
+        [[self tabBarItem] setTitle:title];     
+//        [self setTitle:title];
     }
     
     return self;
@@ -152,7 +155,7 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
     [[MMNDataStore sharedStore] moveNoteAtIndex:[sourceIndexPath row] toIndex:[destinationIndexPath row]];
-    [[MMNDataStore sharedStore] saveChanges];
+            [[MMNDataStore sharedStore] saveChanges];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

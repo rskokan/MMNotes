@@ -37,6 +37,29 @@
                                            action:@selector(cancel:)];
             [[self navigationItem] setLeftBarButtonItem:cancelItem];
         }
+        
+        // Standard bottom toolbar items
+        favoriteItem = [[UIBarButtonItem alloc]
+                                         initWithImage:[UIImage imageNamed:@"star_toolbar"]
+                                         style:UIBarButtonItemStylePlain
+                                         target:self
+                                         action:@selector(toggleFavorite:)];
+        photoItem = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
+                                       target:self
+                                       action:@selector(showPhotos:)];
+        audioItem = [[UIBarButtonItem alloc]
+                                      initWithImage:[UIImage imageNamed:@"mic_toolbar"]
+                                      style:UIBarButtonItemStylePlain
+                                      target:self
+                                      action:@selector(showAudio:)];
+        UIBarButtonItem *trashItem = [[UIBarButtonItem alloc]
+                                      initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                      target:self
+                                      action:@selector(askToDelete:)];
+        UIBarButtonItem *flexiSpace = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
     }
     
     return self;
@@ -52,10 +75,33 @@
     return nil;
 }
 
+- (void)toggleFavorite:(id)sender {
+    // Convert the NSNumber value (Core Data) to BOOL
+    BOOL isFavorite = [[note isFavorite] boolValue];
+    
+    if (isFavorite) {
+        [note setIsFavorite:[NSNumber numberWithBool:NO]];
+    } else {
+        [note setIsFavorite:[NSNumber numberWithBool:YES]];
+    }
+    
+    [self updateFavoriteItemStatus];
+}
+
+// update the indication (highlighted star) whether the note is a favorite
+- (void)updateFavoriteItemStatus {
+    if ([[note isFavorite] boolValue]) {
+        [favoriteItem setTintColor:[UIColor yellowColor]];
+    } else {
+        [favoriteItem setTintColor:nil];
+    }
+}
+
 - (void)save:(id)sender {
     [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
 }
 
+// The Cancel button has been pressed
 - (void)cancel:(id)sender {
     // Confirmation if the note has some contents
     [note setTitle:[titleField text]];
@@ -72,14 +118,26 @@
     }
 }
 
+// The trash toolbar button has been tapped. Ask the user to confirm deletion.
+- (void)askToDelete:(id)sender {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Delete note" message:@"Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+    [alert show];
+}
+
+// User's reaction to cancel a new nonempty or delete an existing note.
+// Button with index 1 is to delete the note.
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
-        // The user confirmed to discard the new not empty note
-        NSLog(@"The user confirmed to discard the new not empty note");
+        // The user confirmed to discard / delete the note
+        NSLog(@"The user confirmed to delete an existing / discard the new not empty note");
         [[MMNDataStore sharedStore] removeNote:note];
-        [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
+        if (isNew) {
+            [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
+        } else {
+            [[self navigationController] popViewControllerAnimated:YES];
+        }
     } else {
-        NSLog(@"The user canceled discarding the note");
+        NSLog(@"The user canceled deleting / discarding the note");
     }
 }
 
@@ -91,6 +149,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    // Show the bottom toolbar
+    [[self navigationController] setToolbarHidden:NO animated:YES];
     
     // Sorting tags by their order property
     static NSArray *tagSortDescriptors = nil;
@@ -114,10 +175,15 @@
     [tagString appendString:@"]"];
     
     [tagsButton setTitle:tagString forState:UIControlStateNormal];
+    
+    [self updateFavoriteItemStatus];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    // Hide the bottom toolbar
+    [[self navigationController] setToolbarHidden:YES animated:YES];
     
     // Clear first responder (hide keyboard)
     [[self view] endEditing:YES];
