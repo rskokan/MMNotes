@@ -26,6 +26,9 @@
         NSString *title;
         if (m == TagsListViewControllerModeSelect) {
             title = @"Select tags";
+            // Not at the top level, hide the main tabbar
+            [self setHidesBottomBarWhenPushed:YES];
+            
             [self displaySelectModeBarButtonItems];
         } else {
             title = @"Tags";

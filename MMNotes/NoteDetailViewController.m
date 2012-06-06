@@ -24,42 +24,9 @@
     self = [super initWithNibName:@"NoteDetailViewController" bundle:nil];
     if (self) {
         isNew = new;
-        if (isNew) {
-            UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
-                                         initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                         target:self
-                                         action:@selector(save:)];
-            [[self navigationItem] setRightBarButtonItem:doneItem];
-            
-            UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc]
-                                           initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                           target:self
-                                           action:@selector(cancel:)];
-            [[self navigationItem] setLeftBarButtonItem:cancelItem];
-        }
-        
-        // Standard bottom toolbar items
-        favoriteItem = [[UIBarButtonItem alloc]
-                                         initWithImage:[UIImage imageNamed:@"star_toolbar"]
-                                         style:UIBarButtonItemStylePlain
-                                         target:self
-                                         action:@selector(toggleFavorite:)];
-        photoItem = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
-                                       target:self
-                                       action:@selector(showPhotos:)];
-        audioItem = [[UIBarButtonItem alloc]
-                                      initWithImage:[UIImage imageNamed:@"mic_toolbar"]
-                                      style:UIBarButtonItemStylePlain
-                                      target:self
-                                      action:@selector(showAudio:)];
-        UIBarButtonItem *trashItem = [[UIBarButtonItem alloc]
-                                      initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
-                                      target:self
-                                      action:@selector(askToDelete:)];
-        UIBarButtonItem *flexiSpace = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
+ 
+        // Not at the top level, hide the main tabbar
+        [self setHidesBottomBarWhenPushed:YES];
     }
     
     return self;
@@ -200,6 +167,43 @@
     
     [[bodyField layer] setBorderWidth:1];
     [[bodyField layer] setBorderColor:[[UIColor grayColor] CGColor]];
+    
+    if (isNew) {
+        UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
+                                     initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                     target:self
+                                     action:@selector(save:)];
+        [[self navigationItem] setRightBarButtonItem:doneItem];
+        
+        UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                       target:self
+                                       action:@selector(cancel:)];
+        [[self navigationItem] setLeftBarButtonItem:cancelItem];
+    }
+    
+    // Standard bottom toolbar items
+    favoriteItem = [[UIBarButtonItem alloc]
+                    initWithImage:[UIImage imageNamed:@"star_toolbar"]
+                    style:UIBarButtonItemStylePlain
+                    target:self
+                    action:@selector(toggleFavorite:)];
+    photoItem = [[UIBarButtonItem alloc]
+                 initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
+                 target:self
+                 action:@selector(showPhotos:)];
+    audioItem = [[UIBarButtonItem alloc]
+                 initWithImage:[UIImage imageNamed:@"mic_toolbar"]
+                 style:UIBarButtonItemStylePlain
+                 target:self
+                 action:@selector(showAudio:)];
+    UIBarButtonItem *trashItem = [[UIBarButtonItem alloc]
+                                  initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                  target:self
+                                  action:@selector(askToDelete:)];
+    UIBarButtonItem *flexiSpace = [[UIBarButtonItem alloc]
+                                   initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
     
     // TODO: set some better background color for iPad?
 }

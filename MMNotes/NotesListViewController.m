@@ -51,6 +51,9 @@
                 [[self navigationItem] setLeftBarButtonItem:nil];
                 [[self navigationItem] setRightBarButtonItem:nil];
                 title = [NSString stringWithFormat:@"Notes tagged %@", [tag name]];
+                
+                // Not at the top level, hide the main tabbar
+                [self setHidesBottomBarWhenPushed:YES];
             }
                 break;
                 
@@ -61,7 +64,6 @@
         
         [[self navigationItem] setTitle:title];
         [[self tabBarItem] setTitle:title];     
-//        [self setTitle:title];
     }
     
     return self;
@@ -169,6 +171,10 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[self tableView] reloadData];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
 }
 
 @end
