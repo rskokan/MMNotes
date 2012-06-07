@@ -14,7 +14,7 @@
 
 @implementation NotesListViewController
 
-@synthesize mode, tag;
+@synthesize mode = _mode, tag = _tag;
 
 // The designated initializer.
 - (id)initWithMode:(NotesListViewControllerMode)m {
@@ -25,8 +25,8 @@
     self = [super initWithStyle:UITableViewStylePlain];
     
     if (self) {
-        [self setMode:m];
-        [self setTag:t];
+        _mode = m;
+        _tag = t;
         NSString *title;
         switch (m) {
             case NotesListViewControllerModeAllNotes: {
@@ -50,7 +50,7 @@
             case NotesListViewControllerModeNotesForTag: {
                 [[self navigationItem] setLeftBarButtonItem:nil];
                 [[self navigationItem] setRightBarButtonItem:nil];
-                title = [NSString stringWithFormat:@"Notes tagged %@", [tag name]];
+                title = [NSString stringWithFormat:@"Notes Tagged %@", [[self tag] name]];
                 
                 // Not at the top level, hide the main tabbar
                 [self setHidesBottomBarWhenPushed:YES];
@@ -92,7 +92,7 @@
 // - favorited notes for NotesListViewControllerModeFavoriteNotes,
 // - notes with a given tag for NotesListViewControllerModeNotesForTag
 - (NSArray *)actualNotes {
-    switch (mode) {
+    switch ([self mode]) {
         case NotesListViewControllerModeAllNotes:
             return [[MMNDataStore sharedStore] allNotes];
             break;
@@ -100,7 +100,7 @@
             return [[MMNDataStore sharedStore] favoritedNotes];
             break;
         case NotesListViewControllerModeNotesForTag:
-            return [[MMNDataStore sharedStore] notesTaggedWith:tag];
+            return [[MMNDataStore sharedStore] notesTaggedWith:[self tag]];
             break;
         default:
             NSLog(@"Unknown value of NotesListViewControllerMode");

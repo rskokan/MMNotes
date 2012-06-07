@@ -32,7 +32,7 @@ typedef enum {
 @property (nonatomic) NotesListViewControllerMode mode;
 
 // When displaying only tags for a given node in the NotesListViewControllerModeNotesForTag mode, this specifies the tag
-@property (nonatomic, weak) MMNTag *tag;
+@property (nonatomic, strong) MMNTag *tag;
 
 // The designated initializer.
 - (id)initWithMode:(NotesListViewControllerMode)mode;

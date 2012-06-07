@@ -10,7 +10,7 @@
 #import "MMNDataStore.h"
 #import "MMNNote.h"
 #import "MMNTag.h"
-
+#import "MMNAttachment.h"
 
 
 @implementation MMNDataStore
@@ -157,6 +157,47 @@
     
     [allTags insertObject:tag atIndex:0];
     return tag;
+}
+
+- (MMNAttachment *)createAttachmentWithImage:(UIImage *)image {
+    CFUUIDRef imageIdRef = CFUUIDCreate(kCFAllocatorDefault);
+    CFStringRef imageIdStrRef = CFUUIDCreateString(kCFAllocatorDefault, imageIdRef);
+    NSString *imageId = (__bridge NSString *) imageIdStrRef;
+    NSString *path = [self attachmentPathForKey:[NSString stringWithFormat:@"%@.jpg", imageId]];
+    NSData *data = UIImageJPEGRepresentation(image, 0.5);
+    // TODO: downscale the attachment
+    if ([data writeToFile:path atomically:YES]) {
+        NSLog(@"Image file written at %@", path);
+    } else {
+        NSLog(@"Error writing image file to %@", path);
+    }
+    CFRelease(imageIdRef);
+    CFRelease(imageIdStrRef);
+    
+    
+    MMNAttachment *att = [NSEntityDescription insertNewObjectForEntityForName:@"MMNAttachment" inManagedObjectContext:ctx];
+    [att setAttachmentType:MMNAttachmentTypeImage];
+    [att setDateModified:[NSDate date]];
+    [att setPath:path];
+    
+    return att;
+}
+
+- (void)removeAttachment:(MMNAttachment *)attachment
+{
+    if ([attachment path]) {
+        [[NSFileManager defaultManager] removeItemAtPath:[attachment path] error:NULL];
+        NSLog(@"Deleted attachment file %@", [attachment path]);
+    }
+    
+    [ctx deleteObject:attachment];
+}
+
+- (NSString *)attachmentPathForKey:(NSString *)key
+{
+    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [documentDirectories objectAtIndex:0];
+    return [documentDirectory stringByAppendingPathComponent:key];
 }
 
 - (void)removeNote:(MMNNote *)note {

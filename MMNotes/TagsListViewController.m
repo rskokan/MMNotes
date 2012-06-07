@@ -15,17 +15,17 @@
 
 @implementation TagsListViewController
 
-@synthesize mode, currentTag, note;
+@synthesize mode = _mode, currentTag = _currentTag, note = _note;
 
 // The designated initializer.
 - (id)initWithMode:(TagsListViewControllerMode)m {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         kMMNIndexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
-        [self setMode:m];
+        _mode = m;
         NSString *title;
         if (m == TagsListViewControllerModeSelect) {
-            title = @"Select tags";
+            title = @"Select Tags";
             // Not at the top level, hide the main tabbar
             [self setHidesBottomBarWhenPushed:YES];
             
@@ -76,7 +76,7 @@
                                   UIBarButtonSystemItemCancel target:self action:@selector(cancelAddingNewTag:)];
     [[self navigationItem] setLeftBarButtonItem:bbiCancel];
     UIBarButtonItem *bbiDone = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
-                                UIBarButtonSystemItemDone target:self action:@selector(confirmAddingNewTag:)];
+                                UIBarButtonSystemItemDone target:self action:@selector(confirmedAddingNewTag:)];
     [[self navigationItem] setRightBarButtonItem:bbiDone];
 }
 
@@ -125,7 +125,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     int allTagsCount = [[[MMNDataStore sharedStore] allTags] count];
-    if (mode == TagsListViewControllerModeAdd)
+    if ([self mode] == TagsListViewControllerModeAdd)
         return allTagsCount + 1;
     
     return allTagsCount;
@@ -134,7 +134,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = nil;
     
-    if ([self isEditing] || (mode == TagsListViewControllerModeAdd && [indexPath row] == 0)) {
+    if ([self isEditing] || ([self mode] == TagsListViewControllerModeAdd && [indexPath row] == 0)) {
         // We are editing tags or creating a new one, so insert an input field
         cell = [tableView dequeueReusableCellWithIdentifier:@"TagEditStyleCell"];
         if (!cell) {
@@ -165,8 +165,8 @@
         [[cell detailTextLabel] setText:[NSString stringWithFormat:@"%d", [[tag notes] count]]];
         
         // Checkmarks for tag select mode (assigning tags to a note)
-        if (mode == TagsListViewControllerModeSelect) {
-            if ([[note tags] containsObject:tag]) {
+        if ([self mode] == TagsListViewControllerModeSelect) {
+            if ([[[self note] tags] containsObject:tag]) {
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             } else {
                 [cell setAccessoryType:UITableViewCellAccessoryNone];
@@ -177,8 +177,8 @@
     return cell;
 }
 
-// Confirms adding of newTag
-- (void)confirmAddingNewTag:(id)sender {
+// Adding of newTag was confirmed
+- (void)confirmedAddingNewTag:(id)sender {
     TagEditStyleCell *cellZero = (TagEditStyleCell *)[[self tableView] cellForRowAtIndexPath:kMMNIndexPathZero]; // The zeroth cell should be the TagEditStyleCell when adding
     NSString *trimmedTagText = [[cellZero tagName] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if ([trimmedTagText length] == 0) {
@@ -186,8 +186,8 @@
         return;
     }
     
-    [currentTag setName:trimmedTagText];
-    [[MMNDataStore sharedStore] ensureUniqueTagName:currentTag];
+    [[self currentTag] setName:trimmedTagText];
+    [[MMNDataStore sharedStore] ensureUniqueTagName:[self currentTag]];
     [[MMNDataStore sharedStore] saveChanges];
     [self setMode:TagsListViewControllerModeView];
     [self displayStandardModeBarButtonItems];
@@ -231,22 +231,22 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     MMNTag *tag = [[[MMNDataStore sharedStore] allTags] objectAtIndex:[indexPath row]];
     
-    if (mode == TagsListViewControllerModeSelect) {
+    if ([self mode] == TagsListViewControllerModeSelect) {
         // Mode of selecting tags for a note
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         
         if ([cell accessoryType] == UITableViewCellAccessoryCheckmark) {
-            NSLog(@"Removing tag %@ from note %@", tag, note);
-            [note removeTagsObject:tag];
+            NSLog(@"Removing tag %@ from note %@", tag, [self note]);
+            [[self note] removeTagsObject:tag];
             [cell setAccessoryType:UITableViewCellAccessoryNone];
         } else {
-            NSLog(@"Adding tag %@ to note %@", tag, note);
-            [note addTagsObject:tag];
+            NSLog(@"Adding tag %@ to note %@", tag, [self note]);
+            [[self note] addTagsObject:tag];
             [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
         }
         [[cell detailTextLabel] setText:[NSString stringWithFormat:@"%d", [[tag notes] count]]];
         
-    } else if (mode == TagsListViewControllerModeView) {
+    } else if ([self mode] == TagsListViewControllerModeView) {
         // Through tapping on a tag in the View mode we display notes with the tag
         NotesListViewController *notesListVC = [[NotesListViewController alloc] initWithMode:NotesListViewControllerModeNotesForTag forTag:tag];
         [[self navigationController] pushViewController:notesListVC animated:YES];

@@ -61,6 +61,31 @@ const int MMNNoteMaxDisplayTextLength = 20;
     && ([[self attachments] count] == 0);
 }
 
+- (NSArray *)orderedImages {
+    static NSPredicate *imageTypePredicate = nil;
+    NSSortDescriptor *sort = nil;
+    if (!imageTypePredicate || !sort) {
+        imageTypePredicate = [NSPredicate predicateWithFormat:@"SELF.attachmentType == %d", MMNAttachmentTypeImage];
+        // Sort it by date taken
+        sort = [NSSortDescriptor sortDescriptorWithKey:@"dateModified" ascending:YES];
+    }
+    
+    // Filter only images
+    NSSet *imageSet = [[self attachments] filteredSetUsingPredicate:imageTypePredicate];
+    
+    return [imageSet sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+}
+
+- (NSSet *)images {
+    static NSPredicate *imageTypePredicate = nil;
+    if (!imageTypePredicate) {
+        imageTypePredicate = [NSPredicate predicateWithFormat:@"SELF.attachmentType == %d", MMNAttachmentTypeImage];
+    }
+    
+    // Filter only images
+    return [[self attachments] filteredSetUsingPredicate:imageTypePredicate];
+}
+
 // TODO: Add some thumbnail preparation like in BNRItem.m
 
 @end

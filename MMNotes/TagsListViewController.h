@@ -21,7 +21,7 @@ typedef enum {
 // 
 @interface TagsListViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
 {
-    // The index path of the first cell in a table (row 0, section 0)
+    
     NSIndexPath *kMMNIndexPathZero;
 }
 
@@ -30,7 +30,7 @@ typedef enum {
 @property (nonatomic, strong) MMNTag *currentTag;
 
 // The actual item for which selected tags are being displayed (in mode TagsListViewControllerModeSelect)
-@property (nonatomic, weak) MMNNote *note;
+@property (nonatomic, strong) MMNNote *note;
 
 // The designated initializer
 - (id)initWithMode:(TagsListViewControllerMode)mode;
@@ -39,6 +39,6 @@ typedef enum {
 - (IBAction)addNewTag:(id)sender;
 
 // Confirms adding of newTag
-- (void)confirmAddingNewTag:(id)sender;
+- (void)confirmedAddingNewTag:(id)sender;
 
 @end

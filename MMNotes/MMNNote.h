@@ -31,6 +31,12 @@ extern const int MMNNoteMaxDisplayTextLength;
 // Returns true if the note has no title, no body and no attachments
 - (BOOL)isEmpty;
 
+// A convenience method that returns a sorted array of attachments of the MMNAttachmentTypeImage type
+- (NSArray *)orderedImages;
+
+// A convenience method that returns a set of attachments of the MMNAttachmentTypeImage type (should be faster than orderedImages).
+- (NSSet *)images;
+
 @end
 
 @interface MMNNote (CoreDataGeneratedAccessors)

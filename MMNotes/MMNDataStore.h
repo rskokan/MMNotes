@@ -10,6 +10,7 @@
 
 @class MMNNote;
 @class MMNTag;
+@class MMNAttachment;
 
 // A store object for storing notes and tags into SQLite.
 // This class is a singleton.
@@ -65,6 +66,12 @@
 // "promote" the existing tag to the new sorting order.
 // Case insensitive.
 - (void)ensureUniqueTagName:(MMNTag *)checkedTag;
+
+// Creates a new MMNAttachment of type MMNAttachmentTypeImage
+- (MMNAttachment *)createAttachmentWithImage:(UIImage *)image;
+
+// Removes the attachment and its associated file
+- (void)removeAttachment:(MMNAttachment *)attachment;
 
 // Returns the DB file path
 - (NSString *)dbArchivePath;

@@ -11,6 +11,7 @@
 #import "MMNDataStore.h"
 #import "MMNNote.h"
 #import "TagsListViewController.h"
+#import "ImageGalleryViewController.h"
 
 @interface NoteDetailViewController ()
 
@@ -18,12 +19,12 @@
 
 @implementation NoteDetailViewController
 
-@synthesize note, dismissBlock, isNew;
+@synthesize note = _note, dismissBlock = _dismissBlock, isNew = _isNew;
 
 - (id)initForNewNote:(BOOL)new {
     self = [super initWithNibName:@"NoteDetailViewController" bundle:nil];
     if (self) {
-        isNew = new;
+        _isNew = new;
  
         // Not at the top level, hide the main tabbar
         [self setHidesBottomBarWhenPushed:YES];
@@ -44,12 +45,12 @@
 
 - (void)toggleFavorite:(id)sender {
     // Convert the NSNumber value (Core Data) to BOOL
-    BOOL isFavorite = [[note isFavorite] boolValue];
+    BOOL isFavorite = [[[self note] isFavorite] boolValue];
     
     if (isFavorite) {
-        [note setIsFavorite:[NSNumber numberWithBool:NO]];
+        [[self note] setIsFavorite:[NSNumber numberWithBool:NO]];
     } else {
-        [note setIsFavorite:[NSNumber numberWithBool:YES]];
+        [[self note] setIsFavorite:[NSNumber numberWithBool:YES]];
     }
     
     [self updateFavoriteItemStatus];
@@ -57,7 +58,7 @@
 
 // update the indication (highlighted star) whether the note is a favorite
 - (void)updateFavoriteItemStatus {
-    if ([[note isFavorite] boolValue]) {
+    if ([[[self note] isFavorite] boolValue]) {
         [favoriteItem setTintColor:[UIColor yellowColor]];
     } else {
         [favoriteItem setTintColor:nil];
@@ -65,29 +66,29 @@
 }
 
 - (void)save:(id)sender {
-    [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
+    [[self presentingViewController] dismissViewControllerAnimated:YES completion:[self dismissBlock]];
 }
 
 // The Cancel button has been pressed
 - (void)cancel:(id)sender {
     // Confirmation if the note has some contents
-    [note setTitle:[titleField text]];
-    [note setBody:[bodyField text]];
+    [[self note] setTitle:[titleField text]];
+    [[self note] setBody:[bodyField text]];
     
-    if ([note isEmpty]) {
+    if ([[self note] isEmpty]) {
         // Discard the new note only when it is empty
-        [[MMNDataStore sharedStore] removeNote:note];
-        [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
+        [[MMNDataStore sharedStore] removeNote:[self note]];
+        [[self presentingViewController] dismissViewControllerAnimated:YES completion:[self dismissBlock]];
     } else {
         // Otherwise ask for confirmation
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Discard note" message:@"The note is not empty. Do you want to discard it?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Discard", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Discard Note" message:@"The note is not empty. Do you want to discard it?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Discard", nil];
         [alert show];
     }
 }
 
 // The trash toolbar button has been tapped. Ask the user to confirm deletion.
 - (void)askToDelete:(id)sender {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Delete note" message:@"Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Delete Note" message:@"Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
     [alert show];
 }
 
@@ -97,9 +98,9 @@
     if (buttonIndex == 1) {
         // The user confirmed to discard / delete the note
         NSLog(@"The user confirmed to delete an existing / discard the new not empty note");
-        [[MMNDataStore sharedStore] removeNote:note];
-        if (isNew) {
-            [[self presentingViewController] dismissViewControllerAnimated:YES completion:dismissBlock];
+        [[MMNDataStore sharedStore] removeNote:[self note]];
+        if ([self isNew]) {
+            [[self presentingViewController] dismissViewControllerAnimated:YES completion:[self dismissBlock]];
         } else {
             [[self navigationController] popViewControllerAnimated:YES];
         }
@@ -109,9 +110,9 @@
 }
 
 - (void)setNote:(MMNNote *)n {
-    note = n;
-    if (!isNew)
-        [[self navigationItem] setTitle:[note displayText]];
+    _note = n;
+    if (![self isNew])
+        [[self navigationItem] setTitle:[[self note] displayText]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -125,14 +126,14 @@
     if (!tagSortDescriptors)
         tagSortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]];
     
-    [titleField setText:[note title]];
-    [bodyField setText:[note body]];
+    [titleField setText:[[self note] title]];
+    [bodyField setText:[[self note] body]];
     
     NSMutableString *tagString = [NSMutableString string];
-    if ([[note tags] count] == 0)
+    if ([[[self note] tags] count] == 0)
         [tagString appendString:@"No tags"];
     else {
-        [[[note tags] sortedArrayUsingDescriptors:tagSortDescriptors] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [[[[self note] tags] sortedArrayUsingDescriptors:tagSortDescriptors] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             if ([tagString length] > 0)
                 [tagString appendString:@", "];
             [tagString appendString:[obj name]];
@@ -155,8 +156,8 @@
     // Clear first responder (hide keyboard)
     [[self view] endEditing:YES];
     
-    [note setTitle:[titleField text]];
-    [note setBody:[bodyField text]];
+    [[self note] setTitle:[titleField text]];
+    [[self note] setBody:[bodyField text]];
     [[MMNDataStore sharedStore] saveChanges];
 }
 
@@ -168,7 +169,7 @@
     [[bodyField layer] setBorderWidth:1];
     [[bodyField layer] setBorderColor:[[UIColor grayColor] CGColor]];
     
-    if (isNew) {
+    if ([self isNew]) {
         UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
                                      initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                      target:self
@@ -192,18 +193,25 @@
                  initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
                  target:self
                  action:@selector(showPhotos:)];
-    audioItem = [[UIBarButtonItem alloc]
-                 initWithImage:[UIImage imageNamed:@"mic_toolbar"]
-                 style:UIBarButtonItemStylePlain
-                 target:self
-                 action:@selector(showAudio:)];
+//    audioItem = [[UIBarButtonItem alloc]
+//                 initWithImage:[UIImage imageNamed:@"mic_toolbar"]
+//                 style:UIBarButtonItemStylePlain
+//                 target:self
+//                 action:@selector(showAudios:)];
     UIBarButtonItem *trashItem = [[UIBarButtonItem alloc]
                                   initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                   target:self
                                   action:@selector(askToDelete:)];
     UIBarButtonItem *flexiSpace = [[UIBarButtonItem alloc]
                                    initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
+//    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
+    
+    if ([[[self note] images] count] > 0)
+        [photoItem setTintColor:[UIColor yellowColor]];
+    else
+        [photoItem setTintColor:nil];
+    
+    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, trashItem, nil] animated:YES];
     
     // TODO: set some better background color for iPad?
 }
@@ -225,7 +233,7 @@
 
 - (IBAction)showTagsPicker:(id)sender {
     TagsListViewController *tagsListVC = [[TagsListViewController alloc] initWithMode:TagsListViewControllerModeSelect];
-    [tagsListVC setNote:note];
+    [tagsListVC setNote:[self note]];
     [[self navigationController] pushViewController:tagsListVC animated:YES];
 }
 
@@ -242,6 +250,12 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
+}
+
+// The camera button has been clicked, show the photo gallery
+- (void)showPhotos:(id)sender {
+    ImageGalleryViewController *igvc = [[ImageGalleryViewController alloc] initWithNote:[self note]];
+    [[self navigationController] pushViewController:igvc animated:YES];
 }
 
 @end

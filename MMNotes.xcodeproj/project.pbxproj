@@ -23,6 +23,10 @@
 		BF158AAF15768CD200CDBE21 /* NoteDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158AAD15768CD200CDBE21 /* NoteDetailViewController.m */; };
 		BF158AB015768CD200CDBE21 /* NoteDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF158AAE15768CD200CDBE21 /* NoteDetailViewController.xib */; };
 		BF158AB315777EB100CDBE21 /* TagsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF158AB215777EB100CDBE21 /* TagsListViewController.m */; };
+		BF36217E157FC6740037F66C /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF36217C157FC6730037F66C /* ImageViewController.m */; };
+		BF36217F157FC6740037F66C /* ImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF36217D157FC6740037F66C /* ImageViewController.xib */; };
+		BF362183157FD51A0037F66C /* ImageGalleryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF362181157FD51A0037F66C /* ImageGalleryViewController.m */; };
+		BF362184157FD51A0037F66C /* ImageGalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF362182157FD51A0037F66C /* ImageGalleryViewController.xib */; };
 		BF9A49F51578EB7900EC2169 /* TagEditStyleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */; };
 		BFE49649157BB7F00039B213 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFE49648157BB7EF0039B213 /* QuartzCore.framework */; };
 		BFE4964D157D40DB0039B213 /* star_toolbar.png in Resources */ = {isa = PBXBuildFile; fileRef = BFE4964B157D40DB0039B213 /* star_toolbar.png */; };
@@ -69,6 +73,12 @@
 		BF158AAE15768CD200CDBE21 /* NoteDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteDetailViewController.xib; sourceTree = "<group>"; };
 		BF158AB115777EB100CDBE21 /* TagsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsListViewController.h; sourceTree = "<group>"; };
 		BF158AB215777EB100CDBE21 /* TagsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsListViewController.m; sourceTree = "<group>"; };
+		BF36217B157FC6730037F66C /* ImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
+		BF36217C157FC6730037F66C /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewController.m; sourceTree = "<group>"; };
+		BF36217D157FC6740037F66C /* ImageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageViewController.xib; sourceTree = "<group>"; };
+		BF362180157FD51A0037F66C /* ImageGalleryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageGalleryViewController.h; sourceTree = "<group>"; };
+		BF362181157FD51A0037F66C /* ImageGalleryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageGalleryViewController.m; sourceTree = "<group>"; };
+		BF362182157FD51A0037F66C /* ImageGalleryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageGalleryViewController.xib; sourceTree = "<group>"; };
 		BF9A49F31578EB7900EC2169 /* TagEditStyleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagEditStyleCell.h; sourceTree = "<group>"; };
 		BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagEditStyleCell.m; sourceTree = "<group>"; };
 		BFE49648157BB7EF0039B213 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -193,6 +203,12 @@
 				BF158AB215777EB100CDBE21 /* TagsListViewController.m */,
 				BF9A49F31578EB7900EC2169 /* TagEditStyleCell.h */,
 				BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */,
+				BF36217B157FC6730037F66C /* ImageViewController.h */,
+				BF36217C157FC6730037F66C /* ImageViewController.m */,
+				BF36217D157FC6740037F66C /* ImageViewController.xib */,
+				BF362180157FD51A0037F66C /* ImageGalleryViewController.h */,
+				BF362181157FD51A0037F66C /* ImageGalleryViewController.m */,
+				BF362182157FD51A0037F66C /* ImageGalleryViewController.xib */,
 			);
 			name = VC;
 			sourceTree = "<group>";
@@ -286,6 +302,8 @@
 				BFE49662157D47730039B213 /* note_toolbar@2x.png in Resources */,
 				BFE49665157F680C0039B213 /* mic_toolbar.png in Resources */,
 				BFE49666157F680C0039B213 /* mic_toolbar@2x.png in Resources */,
+				BF36217F157FC6740037F66C /* ImageViewController.xib in Resources */,
+				BF362184157FD51A0037F66C /* ImageGalleryViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,6 +325,8 @@
 				BF158AAF15768CD200CDBE21 /* NoteDetailViewController.m in Sources */,
 				BF158AB315777EB100CDBE21 /* TagsListViewController.m in Sources */,
 				BF9A49F51578EB7900EC2169 /* TagEditStyleCell.m in Sources */,
+				BF36217E157FC6740037F66C /* ImageViewController.m in Sources */,
+				BF362183157FD51A0037F66C /* ImageGalleryViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

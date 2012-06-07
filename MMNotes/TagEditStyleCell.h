@@ -24,10 +24,10 @@ typedef enum {
 }
 
 // The tag name displayed in the cell's text field
-@property (nonatomic, weak) NSString *tagName;
+@property (nonatomic, copy) NSString *tagName;
 
 // Must be specified when mode=TagEditStyleCellModeAdd
-@property (nonatomic, weak) TagsListViewController *controller;
+@property (nonatomic, strong) TagsListViewController *controller;
 
 // In which mode the cell is displayed
 @property (nonatomic) TagEditStyleCellMode mode;

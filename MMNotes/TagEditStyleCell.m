@@ -11,7 +11,7 @@
 
 @implementation TagEditStyleCell
 
-@synthesize controller, mode;
+@synthesize controller = _controller, mode = _mode;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -56,8 +56,8 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)tf {
     [textField resignFirstResponder];
-    if (mode == TagEditStyleCellModeAdd) {
-        [[self controller] confirmAddingNewTag:self]; // The controler must when adding a new tag; not for editing
+    if ([self mode] == TagEditStyleCellModeAdd) {
+        [[self controller] confirmedAddingNewTag:self]; // The controler must when adding a new tag; not for editing
     }
     
     return YES;

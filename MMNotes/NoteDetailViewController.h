@@ -25,6 +25,9 @@
     
     // The bar buttom to indicate in the note detail view whether the note has an audio attachment
     UIBarButtonItem *audioItem;
+    
+    // Just to be sure (memory), I'm accessing the _note directly in its setter
+    MMNNote *_note;
 }
 
 @property (nonatomic, strong) MMNNote *note;
