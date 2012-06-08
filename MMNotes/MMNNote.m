@@ -86,6 +86,28 @@ const int MMNNoteMaxDisplayTextLength = 20;
     return [[self attachments] filteredSetUsingPredicate:imageTypePredicate];
 }
 
+- (NSString *)orderedTagsString {
+    // Sorting tags by their order property
+    static NSArray *tagSortDescriptors = nil;
+    if (!tagSortDescriptors)
+        tagSortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]];
+    
+    NSMutableString *tagString = [NSMutableString string];
+    if ([[self tags] count] == 0)
+        [tagString appendString:@" "];
+    else {
+        [[[self tags] sortedArrayUsingDescriptors:tagSortDescriptors] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([tagString length] > 0)
+                [tagString appendString:@", "];
+            [tagString appendString:[obj name]];
+        }];
+    }
+    [tagString insertString:@"[" atIndex:0];
+    [tagString appendString:@"]"];
+    
+    return tagString;
+}
+
 // TODO: Add some thumbnail preparation like in BNRItem.m
 
 @end

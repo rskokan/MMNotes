@@ -130,28 +130,10 @@
     // Show the bottom toolbar
     [[self navigationController] setToolbarHidden:NO animated:YES];
     
-    // Sorting tags by their order property
-    static NSArray *tagSortDescriptors = nil;
-    if (!tagSortDescriptors)
-        tagSortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]];
-    
     [titleField setText:[[self note] title]];
     [bodyField setText:[[self note] body]];
     
-    NSMutableString *tagString = [NSMutableString string];
-    if ([[[self note] tags] count] == 0)
-        [tagString appendString:@"No tags"];
-    else {
-        [[[[self note] tags] sortedArrayUsingDescriptors:tagSortDescriptors] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if ([tagString length] > 0)
-                [tagString appendString:@", "];
-            [tagString appendString:[obj name]];
-        }];
-    }
-    [tagString insertString:@"[" atIndex:0];
-    [tagString appendString:@"]"];
-    
-    [tagsButton setTitle:tagString forState:UIControlStateNormal];
+    [tagsButton setTitle:[[self note] orderedTagsString] forState:UIControlStateNormal];
     
     [self updateFavoriteItemStatus];
     [self updatePhotoItemStatus];

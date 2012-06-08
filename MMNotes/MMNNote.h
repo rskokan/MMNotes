@@ -37,6 +37,9 @@ extern const int MMNNoteMaxDisplayTextLength;
 // A convenience method that returns a set of attachments of the MMNAttachmentTypeImage type (should be faster than orderedImages).
 - (NSSet *)images;
 
+// Returns a string of tags that the note has ordered by their order attribute. E.g. [shopping, books]
+- (NSString *)orderedTagsString;
+
 @end
 
 @interface MMNNote (CoreDataGeneratedAccessors)

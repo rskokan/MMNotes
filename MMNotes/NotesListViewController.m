@@ -11,6 +11,7 @@
 #import "MMNDataStore.h"
 #import "MMNNote.h"
 #import "MMNTag.h"
+#import "NoteListCell.h"
 
 @implementation NotesListViewController
 
@@ -82,9 +83,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //TODO: register custom table view cells
-    //    UINib *nib = [UINib nibWithNibName:@"HomepwnerItemCell" bundle:nil];
-    //    [[self tableView] registerNib:nib forCellReuseIdentifier:@"HomepwnerItemCell"];
+    // Register custom table view cells
+    UINib *nib = [UINib nibWithNibName:@"NoteListCell" bundle:nil];
+    [[self tableView] registerNib:nib forCellReuseIdentifier:@"NoteListCell"];
 }
 
 // Returns an array of notes depending on the current mode:
@@ -115,23 +116,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     MMNNote *note = [[self actualNotes] objectAtIndex:[indexPath row]];
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UITableViewCell"];
-    }
+    NoteListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NoteListCell"];
     
-    [[cell textLabel] setText:[note displayText]];
+    [cell setNote:note];
     return cell;
-    
-    // TODO: Use custom cell
-    //    HomepwnerItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HomepwnerItemCell"];
-    //    [[cell nameLabel] setText:[item itemName]];
-    //    [[cell serialNumberLabel] setText:[item serialNumber]];
-    //    NSString *currencySymbol = [[NSLocale currentLocale] objectForKey:NSLocaleCurrencySymbol];
-    //    [[cell valueLabel] setText:[NSString stringWithFormat:@"%@%d", currencySymbol, [item valueInDollars]]];
-    //    [[cell thumbnailView] setImage:[item thumbnail]];
-    //    [cell setController:self];
-    //    [cell setTableView:tableView];
 }
 
 - (IBAction)addNewNote:(id)sender {
@@ -157,7 +145,7 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
     [[MMNDataStore sharedStore] moveNoteAtIndex:[sourceIndexPath row] toIndex:[destinationIndexPath row]];
-            [[MMNDataStore sharedStore] saveChanges];
+    [[MMNDataStore sharedStore] saveChanges];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
