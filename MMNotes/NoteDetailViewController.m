@@ -25,7 +25,7 @@
     self = [super initWithNibName:@"NoteDetailViewController" bundle:nil];
     if (self) {
         _isNew = new;
- 
+        
         // Not at the top level, hide the main tabbar
         [self setHidesBottomBarWhenPushed:YES];
     }
@@ -62,6 +62,15 @@
         [favoriteItem setTintColor:[UIColor yellowColor]];
     } else {
         [favoriteItem setTintColor:nil];
+    }
+}
+
+// update the indication (highlighted camea) whether the note has any images
+- (void)updatePhotoItemStatus {
+    if ([[[self note] images] count] > 0) {
+        [photoItem setTintColor:[UIColor yellowColor]];
+    } else {
+        [photoItem setTintColor:nil];
     }
 }
 
@@ -145,6 +154,7 @@
     [tagsButton setTitle:tagString forState:UIControlStateNormal];
     
     [self updateFavoriteItemStatus];
+    [self updatePhotoItemStatus];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -193,24 +203,18 @@
                  initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
                  target:self
                  action:@selector(showPhotos:)];
-//    audioItem = [[UIBarButtonItem alloc]
-//                 initWithImage:[UIImage imageNamed:@"mic_toolbar"]
-//                 style:UIBarButtonItemStylePlain
-//                 target:self
-//                 action:@selector(showAudios:)];
+    //    audioItem = [[UIBarButtonItem alloc]
+    //                 initWithImage:[UIImage imageNamed:@"mic_toolbar"]
+    //                 style:UIBarButtonItemStylePlain
+    //                 target:self
+    //                 action:@selector(showAudios:)];
     UIBarButtonItem *trashItem = [[UIBarButtonItem alloc]
                                   initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                   target:self
                                   action:@selector(askToDelete:)];
     UIBarButtonItem *flexiSpace = [[UIBarButtonItem alloc]
                                    initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-//    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
-    
-    if ([[[self note] images] count] > 0)
-        [photoItem setTintColor:[UIColor yellowColor]];
-    else
-        [photoItem setTintColor:nil];
-    
+    //    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
     [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, trashItem, nil] animated:YES];
     
     // TODO: set some better background color for iPad?

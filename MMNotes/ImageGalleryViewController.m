@@ -34,8 +34,15 @@
 
 // To be called after an image is added or removed
 - (void)reconfigureImageContentView {
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [[note images] count], scrollView.frame.size.height);
-    pageControl.numberOfPages = [[note images] count];
+    int nrOfPages = [[note images] count];
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * nrOfPages, scrollView.frame.size.height);
+    pageControl.numberOfPages = nrOfPages;
+    
+    // update the scroll view to the appropriate page
+    CGRect frame = scrollView.frame;
+    frame.origin.x = frame.size.width * currentPage;
+    frame.origin.y = 0;
+    [scrollView scrollRectToVisible:frame animated:YES];
     
     [self updateTitle];
 }
@@ -100,8 +107,6 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     
-    [self reconfigureImageContentView];
-    
     // First display of the view, go to the 1st page
     pageControl.currentPage = currentPage;
     
@@ -112,6 +117,21 @@
     [self loadScrollViewWithPage:currentPage - 1];
     [self loadScrollViewWithPage:currentPage];
     [self loadScrollViewWithPage:currentPage + 1];
+    
+    [self reconfigureImageContentView];
+}
+
+- (void)nullAllImageControllers {
+    // Release all image views
+    for (int i = 0; i < [imageControllers count]; i++) {
+        ImageViewController *ivc = [imageControllers objectAtIndex:i];
+        if (ivc && (NSNull *)ivc != [NSNull null]) {
+            NSLog(@"Removing IVC at %d", i);
+            [[ivc view] removeFromSuperview];
+            ivc = nil;
+            [imageControllers replaceObjectAtIndex:i withObject:[NSNull null]];
+        }
+    }
 }
 
 - (void)viewDidUnload
@@ -121,18 +141,7 @@
     // e.g. self.myOutlet = nil;
     
     NSLog(@"ImageGalleryViewController viewDidUnload");
-    
-    // Release all image views
-    for (int i = 0; i < [imageControllers count]; i++) {
-        ImageViewController *ivc = [imageControllers objectAtIndex:i];
-        if (ivc && (NSNull *)ivc != [NSNull null]) {
-            NSLog(@"didReceiveMemoryWarning, removing IVC at %d", i);
-            [[ivc view] removeFromSuperview];
-            ivc = nil;
-            [imageControllers replaceObjectAtIndex:i withObject:[NSNull null]];
-        }
-    }
-    
+    [self nullAllImageControllers];
     scrollView = nil;
 }
 
@@ -169,7 +178,7 @@
     
     for (int i = 0; i < [imageControllers count]; i++) {
         int distanceFromCurrentPage = abs(currentPage - i);
-//        NSLog(@"releaseNotUsedImages: currentPage=%d, i=%d, distanceFromCurrentPage=%d", currentPage, i, distanceFromCurrentPage);
+        //        NSLog(@"releaseNotUsedImages: currentPage=%d, i=%d, distanceFromCurrentPage=%d", currentPage, i, distanceFromCurrentPage);
         if (distanceFromCurrentPage > distanceThreshold) {
             ImageViewController *ivc = [imageControllers objectAtIndex:i];
             if (ivc && (NSNull *)ivc != [NSNull null]) {
@@ -202,12 +211,6 @@
     [self loadScrollViewWithPage:currentPage - 1];
     [self loadScrollViewWithPage:currentPage];
     [self loadScrollViewWithPage:currentPage + 1];
-    
-	// update the scroll view to the appropriate page
-    CGRect frame = scrollView.frame;
-    frame.origin.x = frame.size.width * currentPage;
-    frame.origin.y = 0;
-    [scrollView scrollRectToVisible:frame animated:YES];
     
 	// Set the boolean used when scrolls originate from the UIPageControl. See scrollViewDidScroll: above.
     pageControlUsed = YES;
@@ -252,6 +255,7 @@
     [[MMNDataStore sharedStore] saveChanges];
     [imageControllers addObject:[NSNull null]];
     
+    currentPage = [[note images] count] - 1;
     [self reconfigureImageContentView];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
@@ -264,31 +268,54 @@
     }
     
     // Display the just taken (last) image
-    [pageControl setCurrentPage:[pageControl numberOfPages] - 1];
+    [pageControl setCurrentPage:currentPage];
     [self changePage:nil];
 }
 
 - (IBAction)deletePhoto:(id)sender {
-    NSLog(@"%@", NSStringFromSelector(_cmd));
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Delete Image" message:@"Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+    [alert show];
+}
+
+// User's reaction to delete the current image.
+// Button with index 1 is to delete the image.
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        if ([[note images] count] < 1) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@";-)" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+            return;
+        }
+        
+        // The user confirmed to delete the image
+        NSLog(@"The user confirmed to delete the image");
+        [[MMNDataStore sharedStore] removeAttachment:[[note orderedImages] objectAtIndex:currentPage]];
+        [[MMNDataStore sharedStore] saveChanges];
+        
+        if (currentPage > [[note images] count] - 1) {
+            currentPage = [[note images] count] - 1;
+        }
+        
+        // the order changed, 1 image has been deleted, so clear it all
+        [self nullAllImageControllers];
+        
+        [pageControl setCurrentPage:currentPage];
+        [self reconfigureImageContentView];
+        [self changePage:nil];
+        
+    } else {
+        NSLog(@"The user canceled deleting the image");
+    }
 }
 
 - (void)didReceiveMemoryWarning {
     NSLog(@"ImageGalleryViewController didReceiveMemoryWarning");
     [super didReceiveMemoryWarning];
     
-    // Release all image views except for the currently displayed one
-    for (int i = 0; i < [imageControllers count]; i++) {
-        if (i == [pageControl currentPage])
-            continue;
-        
-        ImageViewController *ivc = [imageControllers objectAtIndex:i];
-        if (ivc && (NSNull *)ivc != [NSNull null]) {
-            NSLog(@"  - removing IVC at %d", i);
-            [[ivc view] removeFromSuperview];
-            ivc = nil;
-            [imageControllers replaceObjectAtIndex:i withObject:[NSNull null]];
-        }
-    }
+    [self nullAllImageControllers];
+    
+    // load the current page
+    [self loadScrollViewWithPage:currentPage];
 }
 
 - (void)dealloc {

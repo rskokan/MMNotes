@@ -185,10 +185,11 @@
 
 - (void)removeAttachment:(MMNAttachment *)attachment
 {
-    if ([attachment path]) {
-        [[NSFileManager defaultManager] removeItemAtPath:[attachment path] error:NULL];
-        NSLog(@"Deleted attachment file %@", [attachment path]);
-    }
+//    The file is deleted in MMNAttachment.prepareForDeletion
+//    if ([attachment path]) {
+//        [[NSFileManager defaultManager] removeItemAtPath:[attachment path] error:NULL];
+//        NSLog(@"Deleted attachment file %@", [attachment path]);
+//    }
     
     [ctx deleteObject:attachment];
 }

@@ -37,4 +37,13 @@
     return [NSSet setWithObject:@"type"];
 }
 
+- (void)prepareForDeletion {
+    // Delete the associated file
+    NSError *err;
+    if ([[NSFileManager defaultManager] removeItemAtPath:[self path] error:&err])
+        NSLog(@"Attachment file %@ successfully deleted", [self path]);
+    else
+        NSLog(@"Error deleting attachment file %@: %@", [self path], [err localizedDescription]);
+}
+
 @end
