@@ -3,13 +3,27 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[TagsListViewController tableView:cellForRowAtIndexPath:]:TagsListViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(NSString *)[tag name]">
+            </PersistentString>
+            <PersistentString
+               value = "(BOOL) [self isEditing]">
+            </PersistentString>
+            <PersistentString
+               value = "[tag name]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[NoteDetailViewController toggleFavorite:]:NoteDetailViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "isFavorite">
+               value = "(NSNumber *)[note isFavorite]">
             </PersistentString>
             <PersistentString
-               value = "(NSNumber *)[note isFavorite]">
+               value = "isFavorite">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -25,16 +39,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[TagsListViewController tableView:cellForRowAtIndexPath:]:TagsListViewController.m">
+         contextName = "-[NoteDetailViewController textFieldDidBeginEditing:]:NoteDetailViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "(BOOL) [self isEditing]">
-            </PersistentString>
-            <PersistentString
-               value = "(NSString *)[tag name]">
-            </PersistentString>
-            <PersistentString
-               value = "[tag name]">
+               value = "activeField">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

@@ -10,12 +10,18 @@
 
 @class MMNNote;
 
-@interface NoteDetailViewController : UIViewController <UITextFieldDelegate, UIAlertViewDelegate>
+@interface NoteDetailViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIAlertViewDelegate>
 {
+//    __weak IBOutlet UIScrollView *scrollView;
     
     __weak IBOutlet UITextField *titleField;
     __weak IBOutlet UITextView *bodyField;
     __weak IBOutlet UIButton *tagsButton;
+    
+    // Used for scrolling when the keyboard gets displayed
+    UIView *activeField;
+    CGFloat originalBodyFieldHeight;
+    CGFloat measuredBodyFieldHeight;
     
     // The bar buttom to toggle and indicate in the note detail view whether the note is a favorite
     UIBarButtonItem *favoriteItem;

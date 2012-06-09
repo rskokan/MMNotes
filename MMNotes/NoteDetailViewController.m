@@ -25,6 +25,7 @@
     self = [super initWithNibName:@"NoteDetailViewController" bundle:nil];
     if (self) {
         _isNew = new;
+        [self registerForKeyboardNotifications];
         
         // Not at the top level, hide the main tabbar
         [self setHidesBottomBarWhenPushed:YES];
@@ -199,7 +200,7 @@
     //    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
     [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, trashItem, nil] animated:YES];
     
-    // TODO: set some better background color for iPad?
+    originalBodyFieldHeight = [bodyField frame].size.height;
 }
 
 - (void)viewDidUnload
@@ -207,6 +208,7 @@
     titleField = nil;
     bodyField = nil;
     tagsButton = nil;
+//    scrollView = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -214,7 +216,8 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return (interfaceOrientation == UIInterfaceOrientationPortrait)
+    || UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
 - (IBAction)showTagsPicker:(id)sender {
@@ -242,6 +245,86 @@
 - (void)showPhotos:(id)sender {
     ImageGalleryViewController *igvc = [[ImageGalleryViewController alloc] initWithNote:[self note]];
     [[self navigationController] pushViewController:igvc animated:YES];
+}
+
+- (void)registerForKeyboardNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+}
+
+// Called when the UIKeyboardDidShowNotification is sent.
+- (void)keyboardWasShown:(NSNotification *)notif {
+    NSDictionary *info = [notif userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    ///
+    
+    // TODO: improve, don't shrink the TextField, use the ScrollView instead (didn't work wel for me, needs some time...)
+    NSLog(@"Before: originalBodyFieldHeight=%f, kbSize.height=%f, bodyField.frame.size.height=%f", originalBodyFieldHeight, kbSize.height, bodyField.frame.size.height);
+    measuredBodyFieldHeight = bodyField.frame.size.height;
+    
+    CGRect bodyFieldFrame = [bodyField frame];
+    bodyFieldFrame.size.height = originalBodyFieldHeight - kbSize.height - 25; // it's strange, bodyFieldFrame.size.height != the original height here
+    // Probably because in the design view in IB, I dont have the top and button bars!!!
+    [bodyField setFrame:bodyFieldFrame];
+    
+    NSLog(@"After: bodyField.frame.size.height=%f", bodyField.frame.size.height);
+    
+    ///
+//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+//    scrollView.contentInset = contentInsets;
+//    scrollView.scrollIndicatorInsets = contentInsets;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    // Your application might not need or want this behavior.
+//    CGRect aRect = self.view.frame;
+//    aRect.size.height -= kbSize.height;
+//    if (!CGRectContainsPoint(aRect, activeField.frame.origin) ) {
+//        CGPoint scrollPoint = CGPointMake(0.0, activeField.frame.origin.y-kbSize.height);
+//        [scrollView setContentOffset:scrollPoint animated:YES];
+//    }
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification {
+    NSLog(@"Before: bodyField.frame.size.height=%f", bodyField.frame.size.height);
+    
+    CGRect bodyFieldFrame = [bodyField frame];
+//    bodyFieldFrame.size.height = originalBodyFieldHeight;
+    bodyFieldFrame.size.height = measuredBodyFieldHeight; // I need to set it back to the previously measured height (which is logical), just don't know why it is different from the specified height in IB, which is the original size as measured in viewDidLoad
+    [bodyField setFrame:bodyFieldFrame];
+    
+    NSLog(@"After: bodyField.frame.size.height=%f", bodyField.frame.size.height);
+    
+    // TODO: same, use the scrolling
+//    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+//    scrollView.contentInset = contentInsets;
+//    scrollView.scrollIndicatorInsets = contentInsets;
+}
+
+//- (void)textFieldDidBeginEditing:(UITextField *)textField
+//{
+//    activeField = textField;
+//}
+//
+//- (void)textFieldDidEndEditing:(UITextField *)textField
+//{
+//    activeField = nil;
+//}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    activeField = textView;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    activeField = nil;
 }
 
 @end
