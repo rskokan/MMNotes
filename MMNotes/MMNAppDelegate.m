@@ -11,9 +11,18 @@
 #import "TagsListViewController.h"
 #import "MMNDataStore.h"
 
+NSString * const MMNNotesMainTabIndexPrefKey = @"MMNNotesMainTabIndexPrefKey";
+
 @implementation MMNAppDelegate
 
 @synthesize window = _window;
+
++ (void)initialize {
+    // Store default temporary preferences (in the registration domain) for the selected tab index; used if the app is launched for the 1st time and there are no persistent preferences in the application domain.
+    // index 1 is for Notes
+    NSDictionary *defaults = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:1] forKey:MMNNotesMainTabIndexPrefKey];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -30,9 +39,13 @@
     UINavigationController *favsNavVC = [[UINavigationController alloc] initWithRootViewController:favsListVC];
     
     NSArray *vcs = [NSArray arrayWithObjects:tagsNavVC, notesNavVC, favsNavVC, nil];
-    UITabBarController *tabVC = [[UITabBarController alloc] init];
+    tabVC = [[UITabBarController alloc] init];
     [tabVC setViewControllers:vcs];
     [[self window] setRootViewController:tabVC];
+    
+    // Select the lastly active tab
+    NSInteger selectedTabIndex = [[NSUserDefaults standardUserDefaults] integerForKey:MMNNotesMainTabIndexPrefKey];
+    [tabVC setSelectedIndex:selectedTabIndex];
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
@@ -52,6 +65,10 @@
     
     if (![[MMNDataStore sharedStore] saveChanges])
         NSLog(@"Error saving app data");
+    
+    // Save the active tab (Tags/Notes/Favorites)
+    [[NSUserDefaults standardUserDefaults] setInteger:[tabVC selectedIndex] forKey:MMNNotesMainTabIndexPrefKey];
+//    [tabVC selectedIndex]
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
