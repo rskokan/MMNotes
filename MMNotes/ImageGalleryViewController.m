@@ -218,7 +218,8 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return (interfaceOrientation == UIInterfaceOrientationPortrait)
+    || UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
 - (IBAction)takePhoto:(id)sender {

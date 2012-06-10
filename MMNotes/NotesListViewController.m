@@ -165,4 +165,10 @@
     [super viewWillDisappear:animated];
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait)
+    || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+}
+
 @end
