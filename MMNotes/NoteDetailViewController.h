@@ -12,16 +12,16 @@
 
 @interface NoteDetailViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIAlertViewDelegate>
 {
-//    __weak IBOutlet UIScrollView *scrollView;
-    
+    __weak IBOutlet UIScrollView *scrollView;
     __weak IBOutlet UITextField *titleField;
     __weak IBOutlet UITextView *bodyField;
     __weak IBOutlet UIButton *tagsButton;
     
     // Used for scrolling when the keyboard gets displayed
     UIView *activeField;
-    CGFloat originalBodyFieldHeight;
-    CGFloat measuredBodyFieldHeight;
+    
+    // The frame of the bodyField when there is no keyboard
+    CGRect normalBodyFieldFrame;
     
     // The bar buttom to toggle and indicate in the note detail view whether the note is a favorite
     UIBarButtonItem *favoriteItem;
