@@ -57,6 +57,30 @@
     return self;
 }
 
+- (UIImage*)imageWithImage:(UIImage*)image 
+              scaledToSize:(CGSize)newSize {
+    CGSize origSize = [image size];
+    
+    if (origSize.width < origSize.height && newSize.width > newSize.height) {
+        NSLog(@"Adopting newSize to the image, exchanging width and height");
+        CGFloat tmp = newSize.width;
+        newSize.width = newSize.height;
+        newSize.height = tmp;
+    }
+    
+    CGFloat ratio = newSize.width / origSize.width;
+    newSize.height = origSize.height * ratio;
+    NSLog(@"The new image size will be %1.0f x %1.0f to maintain aspect ratio", newSize.width, newSize.height); 
+    
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0.0, 0.0 ,newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSLog(@"Original image of size %1.0f x %1.0f scaled to %1.0f x %1.0f", [image size].width, [image size].height, [newImage size].width, [newImage size].height);
+    
+    return newImage;
+}
+
 - (NSString *)dbArchivePath {
     NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentDirectory = [documentDirectories objectAtIndex:0];
@@ -164,10 +188,11 @@
     CFStringRef imageIdStrRef = CFUUIDCreateString(kCFAllocatorDefault, imageIdRef);
     NSString *imageId = (__bridge NSString *) imageIdStrRef;
     NSString *path = [self attachmentPathForKey:[NSString stringWithFormat:@"%@.jpg", imageId]];
-    NSData *data = UIImageJPEGRepresentation(image, 0.5);
+    UIImage *smallerImage = [self imageWithImage:image scaledToSize:CGSizeMake(1024.0, 768.0)];
+    NSData *data = UIImageJPEGRepresentation(smallerImage, 0.6);
     // TODO: downscale the attachment
     if ([data writeToFile:path atomically:YES]) {
-        NSLog(@"Image file written at %@", path);
+        NSLog(@"Image file written at %@, size: %d B", path, [data length]);
     } else {
         NSLog(@"Error writing image file to %@", path);
     }

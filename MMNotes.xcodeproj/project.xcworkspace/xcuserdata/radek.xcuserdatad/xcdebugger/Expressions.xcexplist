@@ -60,5 +60,16 @@
             </PersistentString>
          </PersistentStrings>
       </ContextState>
+      <ContextState
+         contextName = "-[MMNDataStore imageWithImage:scaledToSize:]:MMNDataStore.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(CGSize)[newImage size]">
+            </PersistentString>
+            <PersistentString
+               value = "(CGSize)[image size]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
    </ContextStates>
 </VariablesViewState>
