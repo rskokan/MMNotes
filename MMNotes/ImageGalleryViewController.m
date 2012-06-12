@@ -166,9 +166,9 @@
     
     // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)
     // TODO: it is slow to load the surrounding pages. Load them in background, maybe via the task queue
-    [self loadScrollViewWithPage:currentPage - 1];
+//    [self loadScrollViewWithPage:currentPage - 1];
     [self loadScrollViewWithPage:currentPage];
-    [self loadScrollViewWithPage:currentPage + 1];
+//    [self loadScrollViewWithPage:currentPage + 1];
 }
 
 // Releases ImageViewController that are not surrounding the page being currently displayed
@@ -201,6 +201,10 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     pageControlUsed = NO;
+    
+    // pre-load surrounding images
+    [self loadScrollViewWithPage:currentPage - 1];
+    [self loadScrollViewWithPage:currentPage + 1];
 }
 
 - (IBAction)changePage:(id)sender
