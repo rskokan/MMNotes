@@ -25,7 +25,7 @@
     _note = note;
     [titleLabel setText:[note displayText]];
     [tagsLabel setText:[note orderedTagsString]];;
-    [starButton setHidden:![note isFavorite]];
+    [starButton setHidden:![[note isFavorite] boolValue]];
     [photoButton setHidden:[[note images] count] <= 0];
     [micButton setHidden:YES]; // will be supported in future versions
 }

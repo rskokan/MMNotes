@@ -18,7 +18,7 @@ extern const int MMNNoteMaxDisplayTextLength;
 
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * body;
-@property (nonatomic, retain) NSNumber * isFavorite;
+@property (nonatomic, retain) NSNumber * isFavorite; // Be carefull [[note isFavorite] boolValue] is needed!
 @property (nonatomic, retain) NSDate * dateModified;
 @property (nonatomic, retain) NSNumber * order;
 @property (nonatomic, retain) NSSet *tags;

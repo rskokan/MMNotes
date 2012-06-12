@@ -117,8 +117,8 @@
     MMNNote *note = [[self actualNotes] objectAtIndex:[indexPath row]];
     
     NoteListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NoteListCell"];
-    
     [cell setNote:note];
+    
     return cell;
 }
 

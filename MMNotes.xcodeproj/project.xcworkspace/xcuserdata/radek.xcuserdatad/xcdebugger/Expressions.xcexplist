@@ -3,16 +3,27 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "-[TagsListViewController tableView:cellForRowAtIndexPath:]:TagsListViewController.m">
+         contextName = "-[MMNDataStore imageWithImage:scaledToSize:]:MMNDataStore.m">
          <PersistentStrings>
             <PersistentString
-               value = "(NSString *)[tag name]">
+               value = "(CGSize)[newImage size]">
             </PersistentString>
             <PersistentString
-               value = "(BOOL) [self isEditing]">
+               value = "(CGSize)[image size]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[NoteListCell setNote:]:NoteListCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(BOOL)[starButton isHidden]">
             </PersistentString>
             <PersistentString
-               value = "[tag name]">
+               value = "[note displayText]">
+            </PersistentString>
+            <PersistentString
+               value = "(BOOL)[note isFavorite]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -20,24 +31,10 @@
          contextName = "-[NoteDetailViewController toggleFavorite:]:NoteDetailViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "(NSNumber *)[note isFavorite]">
-            </PersistentString>
-            <PersistentString
                value = "isFavorite">
             </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[NoteDetailViewController keyboardWasShown:]:NoteDetailViewController.m">
-         <PersistentStrings>
             <PersistentString
-               value = "(CGRect)[activeField frame]">
-            </PersistentString>
-            <PersistentString
-               value = "(CGSize)[scrollView contentSize]">
-            </PersistentString>
-            <PersistentString
-               value = "(CGPoint)[scrollView contentOffset]">
+               value = "(NSNumber *)[note isFavorite]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -61,13 +58,30 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[MMNDataStore imageWithImage:scaledToSize:]:MMNDataStore.m">
+         contextName = "-[NoteDetailViewController keyboardWasShown:]:NoteDetailViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "(CGSize)[newImage size]">
+               value = "(CGPoint)[scrollView contentOffset]">
             </PersistentString>
             <PersistentString
-               value = "(CGSize)[image size]">
+               value = "(CGRect)[activeField frame]">
+            </PersistentString>
+            <PersistentString
+               value = "(CGSize)[scrollView contentSize]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[TagsListViewController tableView:cellForRowAtIndexPath:]:TagsListViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(NSString *)[tag name]">
+            </PersistentString>
+            <PersistentString
+               value = "(BOOL) [self isEditing]">
+            </PersistentString>
+            <PersistentString
+               value = "[tag name]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
