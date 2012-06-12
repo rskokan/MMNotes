@@ -158,7 +158,6 @@
     MMNNote *note = [NSEntityDescription insertNewObjectForEntityForName:@"MMNNote"
                                                   inManagedObjectContext:ctx];
     [note setOrder:[NSNumber numberWithDouble:order]];
-    [note setDateModified:[NSDate date]];
     
     [allNotes insertObject:note atIndex:0];
     return note;
@@ -177,7 +176,6 @@
     MMNTag *tag = [NSEntityDescription insertNewObjectForEntityForName:@"MMNTag"
                                                 inManagedObjectContext:ctx];
     [tag setOrder:[NSNumber numberWithDouble:order]];
-    [tag setDateModified:[NSDate date]];
     
     [allTags insertObject:tag atIndex:0];
     return tag;
@@ -202,7 +200,6 @@
     
     MMNAttachment *att = [NSEntityDescription insertNewObjectForEntityForName:@"MMNAttachment" inManagedObjectContext:ctx];
     [att setAttachmentType:MMNAttachmentTypeImage];
-    [att setDateModified:[NSDate date]];
     [att setPath:path];
     
     return att;

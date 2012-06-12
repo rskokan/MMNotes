@@ -108,6 +108,17 @@ const int MMNNoteMaxDisplayTextLength = 20;
     return tagString;
 }
 
+- (void)willSave {
+    //    NSLog(@"willSave %@; hasChanges: %d, isInserted: %d, isDeleted: %d, isUpdated: %d, changedValues: %d, changedValuesForCurrentEvent: %d", self, [self hasChanges], [self isInserted], [self isDeleted], [self isUpdated], [[self changedValues] count], [[self changedValuesForCurrentEvent] count]);
+    
+    // Update dateModified only when it has not been already updated
+    if (([[self changedValues] count] > 0) && (! [self isDeleted])
+        && (! [[[self changedValues] allKeys] containsObject:@"dateModified"])) {
+        NSLog(@"MMNNote.willSave: updating dateModified; changedValues: %@", [self changedValues]);
+        [self setDateModified:[NSDate date]];
+    }
+}
+
 // TODO: Add some thumbnail preparation like in BNRItem.m
 
 @end

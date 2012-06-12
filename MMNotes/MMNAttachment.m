@@ -46,4 +46,13 @@
         NSLog(@"Error deleting attachment file %@: %@", [self path], [err localizedDescription]);
 }
 
+- (void)willSave {
+    // Update dateModified only when it has not been already updated
+    if (([[self changedValues] count] > 0) && (! [self isDeleted])
+        && (! [[[self changedValues] allKeys] containsObject:@"dateModified"])) {
+        NSLog(@"MMNAttachment.willSave: updating dateModified; changedValues: %@", [self changedValues]);
+        [self setDateModified:[NSDate date]];
+    }
+}
+
 @end
