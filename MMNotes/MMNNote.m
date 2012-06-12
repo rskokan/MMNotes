@@ -114,7 +114,7 @@ const int MMNNoteMaxDisplayTextLength = 20;
     // Update dateModified only when it has not been already updated
     if (([[self changedValues] count] > 0) && (! [self isDeleted])
         && (! [[[self changedValues] allKeys] containsObject:@"dateModified"])) {
-        NSLog(@"MMNNote.willSave: updating dateModified; changedValues: %@", [self changedValues]);
+//        NSLog(@"MMNNote.willSave: updating dateModified; changedValues: %@", [self changedValues]);
         [self setDateModified:[NSDate date]];
     }
 }
