@@ -52,14 +52,13 @@
 {
     [super viewDidLoad];
 
-    [imageView setImage:[UIImage imageWithContentsOfFile:[[self imageAttachment] path]]];
+    [imageView setImage:[UIImage imageWithData:[[self imageAttachment] data]]];
     [dateLabel setText:[self formatDateTaken:[[self imageAttachment ]dateModified]]];
-    NSLog(@"ImageViewController viewDidLoad: %@", [[self imageAttachment] path]);
 }
 
 - (void)viewDidUnload
 {
-    NSLog(@"ImageViewController viewDidUnload:  %@", [[self imageAttachment] path]);
+    NSLog(@"ImageViewController viewDidUnload:  %@", [self imageAttachment]);
     imageView = nil;
     dateLabel = nil;
     [super viewDidUnload];

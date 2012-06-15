@@ -182,25 +182,11 @@
 }
 
 - (MMNAttachment *)createAttachmentWithImage:(UIImage *)image {
-    CFUUIDRef imageIdRef = CFUUIDCreate(kCFAllocatorDefault);
-    CFStringRef imageIdStrRef = CFUUIDCreateString(kCFAllocatorDefault, imageIdRef);
-    NSString *imageId = (__bridge NSString *) imageIdStrRef;
-    NSString *path = [self attachmentPathForKey:[NSString stringWithFormat:@"%@.jpg", imageId]];
     UIImage *smallerImage = [self imageWithImage:image scaledToSize:CGSizeMake(1024.0, 768.0)];
     NSData *data = UIImageJPEGRepresentation(smallerImage, 0.6);
-    // TODO: downscale the attachment
-    if ([data writeToFile:path atomically:YES]) {
-        NSLog(@"Image file written at %@, size: %d B", path, [data length]);
-    } else {
-        NSLog(@"Error writing image file to %@", path);
-    }
-    CFRelease(imageIdRef);
-    CFRelease(imageIdStrRef);
-    
-    
     MMNAttachment *att = [NSEntityDescription insertNewObjectForEntityForName:@"MMNAttachment" inManagedObjectContext:ctx];
     [att setAttachmentType:MMNAttachmentTypeImage];
-    [att setPath:path];
+    [att setData:data];
     
     return att;
 }

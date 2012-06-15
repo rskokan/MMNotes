@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="v1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11E53" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="MMNAttachment" representedClassName="MMNAttachment" syncable="YES">
+        <attribute name="data" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" storedInTruthFile="YES" syncable="YES"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="order" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="note" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="MMNNote" inverseName="attachments" inverseEntity="MMNNote" syncable="YES"/>
     </entity>
@@ -24,7 +24,7 @@
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MMNNote" inverseName="tags" inverseEntity="MMNNote" syncable="YES"/>
     </entity>
     <elements>
-        <element name="MMNAttachment" positionX="160" positionY="192" width="128" height="120"/>
+        <element name="MMNAttachment" positionX="160" positionY="192" width="128" height="135"/>
         <element name="MMNNote" positionX="160" positionY="192" width="128" height="150"/>
         <element name="MMNTag" positionX="160" positionY="192" width="128" height="105"/>
     </elements>

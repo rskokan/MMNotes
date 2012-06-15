@@ -15,12 +15,12 @@
 @dynamic type;
 
 @dynamic name;
-@dynamic path;
+@dynamic data;
 @dynamic order;
 @dynamic dateModified;
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"[MMNAttachment(type=%d, path=%@, order=%f]", [self type], [self path], [self order]];
+    return [NSString stringWithFormat:@"[MMNAttachment(type=%d, order=%f]", [self type], [self order]];
 }
 
 // Returns the "type" attribute as MMNAttachmentType. It is stored in DB as NSNumber.
@@ -36,15 +36,6 @@
 // To get KVO notifications for "attachmentType" when "type" changes
 + (NSSet *)keyPathsForValuesAffectingAttachmentType {
     return [NSSet setWithObject:@"type"];
-}
-
-- (void)prepareForDeletion {
-    // Delete the associated file
-    NSError *err;
-    if ([[NSFileManager defaultManager] removeItemAtPath:[self path] error:&err])
-        NSLog(@"Attachment file %@ successfully deleted", [self path]);
-    else
-        NSLog(@"Error deleting attachment file %@: %@", [self path], [err localizedDescription]);
 }
 
 - (void)willSave {

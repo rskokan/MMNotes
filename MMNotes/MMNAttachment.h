@@ -24,7 +24,7 @@ typedef enum {
 @property (nonatomic, retain) NSNumber * type;
 @property (nonatomic) MMNAttachmentType attachmentType;
 @property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * path;
+@property (nonatomic, retain) NSData * data;
 @property (nonatomic, retain) NSNumber * order;
 @property (nonatomic, retain) NSDate * dateModified;
 
