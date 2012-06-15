@@ -180,6 +180,7 @@
 		BF158AA915767E3300CDBE21 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				BF158A8315764D4400CDBE21 /* MMNotes.xcdatamodeld */,
 				BF158AA615766B6300CDBE21 /* MMNNote.h */,
 				BF158AA715766B6300CDBE21 /* MMNNote.m */,
 				BF158AA315766B6200CDBE21 /* MMNAttachment.h */,
@@ -193,7 +194,6 @@
 		BF158AAA15767E3B00CDBE21 /* Store */ = {
 			isa = PBXGroup;
 			children = (
-				BF158A8315764D4400CDBE21 /* MMNotes.xcdatamodeld */,
 				BF158A8615764FFE00CDBE21 /* MMNDataStore.h */,
 				BF158A8715764FFE00CDBE21 /* MMNDataStore.m */,
 			);

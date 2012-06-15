@@ -14,6 +14,7 @@
 // Use the attachmentType which returns the MMNAttachmentType type. This is only for storing in DB.
 @dynamic type;
 
+@dynamic name;
 @dynamic path;
 @dynamic order;
 @dynamic dateModified;
