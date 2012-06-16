@@ -83,6 +83,7 @@
 		BF362180157FD51A0037F66C /* ImageGalleryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageGalleryViewController.h; sourceTree = "<group>"; };
 		BF362181157FD51A0037F66C /* ImageGalleryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageGalleryViewController.m; sourceTree = "<group>"; };
 		BF362182157FD51A0037F66C /* ImageGalleryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageGalleryViewController.xib; sourceTree = "<group>"; };
+		BF7BAA0B158C910D005E77DF /* MMNotes.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MMNotes.entitlements; sourceTree = "<group>"; };
 		BF9A49F31578EB7900EC2169 /* TagEditStyleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagEditStyleCell.h; sourceTree = "<group>"; };
 		BF9A49F41578EB7900EC2169 /* TagEditStyleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagEditStyleCell.m; sourceTree = "<group>"; };
 		BFB52C9C15823B950072AF88 /* NoteListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteListCell.h; sourceTree = "<group>"; };
@@ -155,6 +156,7 @@
 		BF158A6C1576273400CDBE21 /* MMNotes */ = {
 			isa = PBXGroup;
 			children = (
+				BF7BAA0B158C910D005E77DF /* MMNotes.entitlements */,
 				BFE4964A157D40AE0039B213 /* Images */,
 				BF158AAB15767E5800CDBE21 /* VC */,
 				BF158AAA15767E3B00CDBE21 /* Store */,
@@ -410,12 +412,15 @@
 		BF158A7B1576273400CDBE21 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MMNotes/MMNotes.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Radek Skokan (SRZKBY88YF)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MMNotes/MMNotes-Prefix.pch";
 				INFOPLIST_FILE = "MMNotes/MMNotes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 1;
+				PROVISIONING_PROFILE = "4D9F54FA-B4C2-4581-865E-9BCA629F3478";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -423,12 +428,15 @@
 		BF158A7C1576273400CDBE21 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MMNotes/MMNotes.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Radek Skokan (SRZKBY88YF)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MMNotes/MMNotes-Prefix.pch";
 				INFOPLIST_FILE = "MMNotes/MMNotes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 1;
+				PROVISIONING_PROFILE = "4D9F54FA-B4C2-4581-865E-9BCA629F3478";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

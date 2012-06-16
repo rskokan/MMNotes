@@ -24,6 +24,10 @@
         kMMNIndexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
         _mode = m;
         NSString *title;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
+                                                     name:MMNDataStoreUpdateNotification object:nil];
+        
         if (m == TagsListViewControllerModeSelect) {
             title = @"Select Tags";
             // Not at the top level, hide the main tabbar
@@ -50,6 +54,11 @@
 // Must always override super's designated initializer.
 - (id)initWithStyle:(UITableViewStyle)style {
     return [self init];
+}
+
+// The store has been updated
+- (void)storeUpdated:(NSNotification *)notif {
+    [[self tableView] reloadData];
 }
 
 - (void)displayAddTagBarButton {

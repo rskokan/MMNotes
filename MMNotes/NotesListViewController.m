@@ -29,6 +29,10 @@
         _mode = m;
         _tag = t;
         NSString *title;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
+                                                     name:MMNDataStoreUpdateNotification object:nil];
+        
         switch (m) {
             case NotesListViewControllerModeAllNotes: {
                 [[self navigationItem] setLeftBarButtonItem:[self editButtonItem]];
@@ -78,6 +82,11 @@
 // Must always override super's designated initializer.
 - (id)initWithStyle:(UITableViewStyle)style {
     return [self init];
+}
+
+// The store has been updated
+- (void)storeUpdated:(NSNotification *)notif {
+    [[self tableView] reloadData];
 }
 
 - (void)viewDidLoad {

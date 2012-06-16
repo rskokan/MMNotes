@@ -12,6 +12,8 @@
 @class MMNTag;
 @class MMNAttachment;
 
+extern NSString * const MMNDataStoreUpdateNotification;
+
 // A store object for storing notes and tags into SQLite.
 // This class is a singleton.
 //
@@ -72,9 +74,6 @@
 
 // Removes the attachment and its associated file
 - (void)removeAttachment:(MMNAttachment *)attachment;
-
-// Returns the DB file path
-- (NSString *)dbArchivePath;
 
 - (BOOL)saveChanges;
 

@@ -12,6 +12,10 @@
 #import "MMNTag.h"
 #import "MMNAttachment.h"
 
+NSString * const MMNDataStoreUpdateNotification = @"MMNDataStoreUpdateNotification";
+
+NSString * const DATA_FILE_NAME = @"mmnotes_store.data";
+NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
 
 @implementation MMNDataStore
 
@@ -32,29 +36,23 @@
 - (id)init {
     self = [super init];
     if (self) {
-        // Read in MMNotes.xcdatamodeld
-        model = [NSManagedObjectModel mergedModelFromBundles:nil];
-        NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-        
-        NSURL *storeURL = [NSURL fileURLWithPath:[self dbArchivePath]];
-        NSError *error = nil;
-        
-        if (![psc addPersistentStoreWithType:NSSQLiteStoreType
-                               configuration:nil
-                                         URL:storeURL
-                                     options:nil
-                                       error:&error]) {
-            [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
-        }
-        
-        ctx = [[NSManagedObjectContext alloc] init];
-        [ctx setPersistentStoreCoordinator:psc];
-        [ctx setUndoManager:nil];
-        
+        [self openDB];
         [self loadAllData];
     }
     
     return self;
+}
+
+// Merge iCloud content changes
+- (void)contentChange:(NSNotification *)notif {
+    [ctx mergeChangesFromContextDidSaveNotification:notif];
+    
+    // Post a notification that content has been updated so that UI can be reloaded.
+    // As the merge is running in background, we sent the notif. to the main app queue so there is no delay.
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        NSNotification *updateNotif = [NSNotification notificationWithName:MMNDataStoreUpdateNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotification:updateNotif];
+    }];
 }
 
 - (UIImage*)imageWithImage:(UIImage*)image 
@@ -81,30 +79,108 @@
     return newImage;
 }
 
-- (NSString *)dbArchivePath {
-    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentDirectory = [documentDirectories objectAtIndex:0];
-    return [documentDirectory stringByAppendingPathComponent:@"store.data"];
+// Inits and opens DB. If the user has iCloud enabled, it will be used: the DB store file will be placed in the ubiquitous container, a .nosync folder. The transaction log wil be synchronized with iCloud.
+// If iCloud is not available, the entire DB will be on the local file system.
+- (void)openDB {
+    // Read in MMNotes.xcdatamodeld
+    model = [NSManagedObjectModel mergedModelFromBundles:nil];
+    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    
+    // Find the location of the iCloud ubiquity container on the local file system
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *ubiContainer = [fileManager URLForUbiquityContainerIdentifier:nil]; // takes a long time
+    NSURL *storeURL;
+    NSError *error;
+    
+    if (ubiContainer) {
+        NSLog(@"The user has iCloud, using it");
+        
+        // Register for iCloud notifications
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentChange:)
+                                                     name:NSPersistentStoreDidImportUbiquitousContentChangesNotification object:nil];
+        
+        storeURL = [self ubiquitousDBArchiveURL:ubiContainer];
+        
+        // Specify location of the transaction log in the ubiquity container
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
+        [options setObject:TRANS_LOG_NAME forKey:NSPersistentStoreUbiquitousContentNameKey];
+        [options setObject:ubiContainer forKey:NSPersistentStoreUbiquitousContentURLKey];
+        
+        if (![psc addPersistentStoreWithType:NSSQLiteStoreType
+                               configuration:nil
+                                         URL:storeURL
+                                     options:options
+                                       error:&error]) {
+            [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+        }
+        
+    } else {
+        NSLog(@"iCloud is not available, using local file system");
+        storeURL = [self localDBArchiveURL];
+        
+        if (![psc addPersistentStoreWithType:NSSQLiteStoreType
+                               configuration:nil
+                                         URL:storeURL
+                                     options:nil
+                                       error:&error]) {
+            [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+        }
+        
+    }
+    
+    ctx = [[NSManagedObjectContext alloc] init];
+    [ctx setPersistentStoreCoordinator:psc];
+    [ctx setUndoManager:nil];
 }
 
+// Returns the URL for the DB archive stored locally, NOT within the iCloud's ubiquitous container
+- (NSURL *)localDBArchiveURL {
+    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [documentDirectories objectAtIndex:0];
+    NSString *storePath = [documentDirectory stringByAppendingPathComponent:DATA_FILE_NAME];
+    return [NSURL fileURLWithPath:storePath];
+}
+
+// Returns the URL for the DB archive stored within the iCloud's ubiquitous container
+- (NSURL *)ubiquitousDBArchiveURL:(NSURL *)ubiquitousContainer {
+    NSError *error;
+    
+    NSURL *nosyncUbiDir = [ubiquitousContainer URLByAppendingPathComponent:@"mmnotes.nosync"];
+    if (![[NSFileManager defaultManager] createDirectoryAtURL:nosyncUbiDir
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:&error]) {
+        NSLog(@"Error creating data directory in the ubiquitous container: %@", [error localizedDescription]);
+    };
+    
+    return [nosyncUbiDir URLByAppendingPathComponent:DATA_FILE_NAME];
+}
 
 - (BOOL)saveChanges {
     NSError *err;
     BOOL success = [ctx save:&err];
+    
     if (!success) {
-        NSLog(@"Error saving data: %@", [err localizedDescription]);
+        NSLog(@"Error saving data: %@.\n Trying to re-open DB (perhaps iCloud was disabled)", [err localizedDescription]);
+        // TODO: iOS 6 will have NSUbiquityIdentityDidChangeNotification to detect iCloud account changes
+        [self openDB];
+        [ctx save:nil]; // It does not save here.
+        
+        [self loadAllData];
+        
+        // Post a notification that content has been updated so that UI can be reloaded.
+        NSNotification *updateNotif = [NSNotification notificationWithName:MMNDataStoreUpdateNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotification:updateNotif];
     }
     
     return success;
 }
 
-// Loads all Notes and Tags from DB if not already loaded
+// Reloads all Notes and Tags
 - (void)loadAllData {
-    if (!allNotes)
-        allNotes = [[NSMutableArray alloc] initWithArray:[self fetchAllEntitiesWithName:@"MMNNote"]];
+    allNotes = [[NSMutableArray alloc] initWithArray:[self fetchAllEntitiesWithName:@"MMNNote"]];
     
-    if (!allTags)
-        allTags = [[NSMutableArray alloc] initWithArray:[self fetchAllEntitiesWithName:@"MMNTag"]];
+    allTags = [[NSMutableArray alloc] initWithArray:[self fetchAllEntitiesWithName:@"MMNTag"]];
 }
 
 - (NSArray *)fetchAllEntitiesWithName:(NSString *)name {
@@ -192,13 +268,7 @@
 }
 
 - (void)removeAttachment:(MMNAttachment *)attachment
-{
-//    The file is deleted in MMNAttachment.prepareForDeletion
-//    if ([attachment path]) {
-//        [[NSFileManager defaultManager] removeItemAtPath:[attachment path] error:NULL];
-//        NSLog(@"Deleted attachment file %@", [attachment path]);
-//    }
-    
+{ 
     [ctx deleteObject:attachment];
 }
 
