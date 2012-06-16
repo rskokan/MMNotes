@@ -20,11 +20,12 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
 @implementation MMNDataStore
 
 + (MMNDataStore *)sharedStore {
-    static MMNDataStore * sharedStore = nil;
+    static dispatch_once_t once;
+    static MMNDataStore *sharedStore;
     
-    if (!sharedStore) {
+    dispatch_once(&once, ^{
         sharedStore = [[super allocWithZone:nil] init];
-    }
+    });
     
     return sharedStore;
 }
