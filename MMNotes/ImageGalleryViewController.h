@@ -25,6 +25,7 @@
     
     __weak IBOutlet UIScrollView *scrollView;
     __weak IBOutlet UIPageControl *pageControl;
+    __weak IBOutlet UILabel *takePhotoHelpLabel;
 }
 
 - (id)initWithNote:(MMNNote *)note;

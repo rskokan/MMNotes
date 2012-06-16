@@ -45,6 +45,12 @@
     [scrollView scrollRectToVisible:frame animated:YES];
     
     [self updateTitle];
+    
+    // Display help text how to take photos
+    if ([pageControl numberOfPages] < 1)
+        [takePhotoHelpLabel setHidden:NO];
+    else
+        [takePhotoHelpLabel setHidden:YES];
 }
 
 - (void)updateTitle {
