@@ -36,8 +36,17 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
 - (id)init {
     self = [super init];
     if (self) {
-        [self openDB];
-        [self loadAllData];
+        dispatch_async (dispatch_get_global_queue (DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self openDB];
+            [self loadAllData];
+            
+            // Post a notification that content has been updated so that UI can be reloaded.
+            // As the merge is running in background, we sent the notif. to the main app queue so there is no delay.
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                NSNotification *updateNotif = [NSNotification notificationWithName:MMNDataStoreUpdateNotification object:nil];
+                [[NSNotificationCenter defaultCenter] postNotification:updateNotif];
+            }];
+        });
     }
     
     return self;
