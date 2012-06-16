@@ -14,7 +14,7 @@
 
 NSString * const MMNDataStoreUpdateNotification = @"MMNDataStoreUpdateNotification";
 
-NSString * const DATA_FILE_NAME = @"mmnotes_store.data";
+NSString * const DB_STORE_NAME = @"mmnotes_store.data";
 NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
 
 @implementation MMNDataStore
@@ -39,7 +39,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
     if (self) {
         dispatch_async (dispatch_get_global_queue (DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self openDB];
-            [self loadAllData];
+            [self reloadAllData];
             
             // Post a notification that content has been updated so that UI can be reloaded.
             // As the merge is running in background, we sent the notif. to the main app queue so there is no delay.
@@ -48,14 +48,26 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
                 [[NSNotificationCenter defaultCenter] postNotification:updateNotif];
             }];
         });
+        
+        // Register for iCloud notifications
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentChange:)
+                                                     name:NSPersistentStoreDidImportUbiquitousContentChangesNotification object:nil];
     }
     
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 // Merge iCloud content changes
 - (void)contentChange:(NSNotification *)notif {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
     [ctx mergeChangesFromContextDidSaveNotification:notif];
+    
+    // Need to reload cached Notes and Tags: some might have been added or removed
+    [self reloadAllData];
     
     // Post a notification that content has been updated so that UI can be reloaded.
     // As the merge is running in background, we sent the notif. to the main app queue so there is no delay.
@@ -104,11 +116,6 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
     
     if (ubiContainer) {
         NSLog(@"The user has iCloud, using it");
-        
-        // Register for iCloud notifications
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentChange:)
-                                                     name:NSPersistentStoreDidImportUbiquitousContentChangesNotification object:nil];
-        
         storeURL = [self ubiquitousDBArchiveURL:ubiContainer];
         
         // Specify location of the transaction log in the ubiquity container
@@ -121,7 +128,18 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
                                          URL:storeURL
                                      options:options
                                        error:&error]) {
-            [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+            //            [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+            NSLog(@"Could not open database. Will try to remove old DB files and open again.");
+            NSURL *transLogURL = [ubiContainer URLByAppendingPathComponent:TRANS_LOG_NAME];
+            [self removeICloudDBStore:storeURL withTransLog:transLogURL];
+            if (![psc addPersistentStoreWithType:NSSQLiteStoreType
+                                   configuration:nil
+                                             URL:storeURL
+                                         options:nil
+                                           error:&error]) {
+                NSLog(@"DB opening failed again, exiting");
+                [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+            }
         }
         
     } else {
@@ -144,11 +162,34 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
     [ctx setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
 }
 
+// Removes DB files (both data and transaction log) stored in iCloud
+- (void)removeICloudDBStore:(NSURL *)storeURL withTransLog:(NSURL *)transLogURL {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    // Remove store
+    NSError *error = nil;
+    if ([fileManager fileExistsAtPath:[storeURL path]]) {
+        NSLog(@"DB store file exists, removing");
+        [fileManager removeItemAtURL:storeURL error:&error];
+        if (error)
+            NSLog(@"Error deleting old DB store");
+    }
+    
+    // Remove transaction log
+    error = nil;
+    if ([fileManager fileExistsAtPath:[transLogURL path]]) {
+        NSLog(@"DB transaction log exists, removing");
+        [fileManager removeItemAtURL:transLogURL error:&error];
+        if (error)
+            NSLog(@"Error deleting old DB transaction log");
+    }
+}
+
 // Returns the URL for the DB archive stored locally, NOT within the iCloud's ubiquitous container
 - (NSURL *)localDBArchiveURL {
     NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentDirectory = [documentDirectories objectAtIndex:0];
-    NSString *storePath = [documentDirectory stringByAppendingPathComponent:DATA_FILE_NAME];
+    NSString *storePath = [documentDirectory stringByAppendingPathComponent:DB_STORE_NAME];
     return [NSURL fileURLWithPath:storePath];
 }
 
@@ -164,7 +205,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
         NSLog(@"Error creating data directory in the ubiquitous container: %@", [error localizedDescription]);
     };
     
-    return [nosyncUbiDir URLByAppendingPathComponent:DATA_FILE_NAME];
+    return [nosyncUbiDir URLByAppendingPathComponent:DB_STORE_NAME];
 }
 
 - (BOOL)saveChanges {
@@ -177,7 +218,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
         [self openDB];
         [ctx save:nil]; // It does not save here.
         
-        [self loadAllData];
+        [self reloadAllData];
         
         // Post a notification that content has been updated so that UI can be reloaded.
         NSNotification *updateNotif = [NSNotification notificationWithName:MMNDataStoreUpdateNotification object:nil];
@@ -188,7 +229,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
 }
 
 // Reloads all Notes and Tags
-- (void)loadAllData {
+- (void)reloadAllData {
     allNotes = [[NSMutableArray alloc] initWithArray:[self fetchAllEntitiesWithName:@"MMNNote"]];
     
     allTags = [[NSMutableArray alloc] initWithArray:[self fetchAllEntitiesWithName:@"MMNTag"]];

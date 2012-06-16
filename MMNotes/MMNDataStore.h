@@ -77,7 +77,7 @@ extern NSString * const MMNDataStoreUpdateNotification;
 
 - (BOOL)saveChanges;
 
-- (void)loadAllData;
+- (void)reloadAllData;
 
 
 

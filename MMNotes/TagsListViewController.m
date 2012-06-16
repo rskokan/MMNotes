@@ -56,6 +56,10 @@
     return [self init];
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 // The store has been updated
 - (void)storeUpdated:(NSNotification *)notif {
     [[self tableView] reloadData];
