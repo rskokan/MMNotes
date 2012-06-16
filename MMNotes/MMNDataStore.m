@@ -140,6 +140,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
     ctx = [[NSManagedObjectContext alloc] init];
     [ctx setPersistentStoreCoordinator:psc];
     [ctx setUndoManager:nil];
+    [ctx setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
 }
 
 // Returns the URL for the DB archive stored locally, NOT within the iCloud's ubiquitous container
