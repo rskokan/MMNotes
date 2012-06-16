@@ -58,12 +58,13 @@
 
 - (void)viewDidUnload
 {
-    NSLog(@"ImageViewController viewDidUnload:  %@", [self imageAttachment]);
-    imageView = nil;
-    dateLabel = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    
+    NSLog(@"ImageViewController viewDidUnload:  %@", [self imageAttachment]);
+    imageView = nil;
+    dateLabel = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

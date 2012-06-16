@@ -24,10 +24,6 @@
         kMMNIndexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
         _mode = m;
         NSString *title;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
-                                                     name:MMNDataStoreUpdateNotification object:nil];
-        
         if (m == TagsListViewControllerModeSelect) {
             title = @"Select Tags";
             // Not at the top level, hide the main tabbar
@@ -57,6 +53,15 @@
 }
 
 - (void)dealloc {
+    [self deregisterNotifications];
+}
+
+- (void)registerNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
+                                                 name:MMNDataStoreUpdateNotification object:nil];
+}
+
+- (void)deregisterNotifications {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -134,6 +139,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self registerNotifications];
+}
+
+- (void)viewDidUnload {
+    [super viewDidUnload];
+    [self deregisterNotifications];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

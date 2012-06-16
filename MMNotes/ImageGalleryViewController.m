@@ -32,6 +32,33 @@
     @throw [NSException exceptionWithName:@"Wrong initializer" reason:@"Use initWithNote:" userInfo:nil];
 }
 
+- (void)dealloc {
+    [self deregisterNotifications];
+}
+
+- (void)registerNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
+                                                 name:MMNDataStoreUpdateNotification object:nil];
+}
+
+- (void)deregisterNotifications {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+// The store has been updated
+// TODO there is a bug, the app sometimes crashes somewhere here
+- (void)storeUpdated:(NSNotification *)notif {
+    [self nullAllImageControllers];
+    
+    while ([imageControllers count] < [[note images] count]) {
+        [imageControllers addObject:[NSNull null]];
+    }
+    
+    [self reconfigureImageContentView];
+    // Reload the current and surrounding pages
+    [self changePage:nil];
+}
+
 // To be called after an image is added or removed
 - (void)reconfigureImageContentView {
     int nrOfPages = [[note images] count];
@@ -125,6 +152,9 @@
     [self loadScrollViewWithPage:currentPage + 1];
     
     [self reconfigureImageContentView];
+    
+    // TODO: temporarily disabled because of a bug in storeUpdated:
+//    [self registerNotifications];
 }
 
 - (void)nullAllImageControllers {
@@ -147,6 +177,7 @@
     // e.g. self.myOutlet = nil;
     
     NSLog(@"ImageGalleryViewController viewDidUnload");
+    [self deregisterNotifications];
     [self nullAllImageControllers];
     scrollView = nil;
 }
@@ -327,10 +358,6 @@
     
     // load the current page
     [self loadScrollViewWithPage:currentPage];
-}
-
-- (void)dealloc {
-    NSLog(@"ImageGalleryViewController dealloc");
 }
 
 @end

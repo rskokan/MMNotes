@@ -199,26 +199,27 @@
     //    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
     [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, trashItem, nil] animated:YES];
     
-    [self registerForKeyboardNotifications];
+    [self registerNotifications];
 }
 
 - (void)viewDidUnload
 {
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    
     titleField = nil;
     bodyField = nil;
     tagsButton = nil;
     //    scrollView = nil;
     scrollView = nil;
     scrollView = nil;
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
     
-    [self deregisterForKeyboardNotifications];
+    [self deregisterNotifications];
 }
 
 - (void)dealloc {
-    [self deregisterForKeyboardNotifications];
+    [self deregisterNotifications];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -254,7 +255,7 @@
     [[self navigationController] pushViewController:igvc animated:YES];
 }
 
-- (void)registerForKeyboardNotifications {
+- (void)registerNotifications {
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector:@selector(keyboardWasShown:)
                                                  name:UIKeyboardDidShowNotification
@@ -263,10 +264,19 @@
                                              selector:@selector(keyboardWillBeHidden:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
+                                                 name:MMNDataStoreUpdateNotification object:nil];
 }
 
-- (void)deregisterForKeyboardNotifications {
+- (void)deregisterNotifications {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+// The store has been updated
+- (void)storeUpdated:(NSNotification *)notif {
+    [self updateFavoriteItemStatus];
+    [self updatePhotoItemStatus];
 }
 
 // Called when the UIKeyboardDidShowNotification is sent.

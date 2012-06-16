@@ -29,10 +29,6 @@
         _mode = m;
         _tag = t;
         NSString *title;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
-                                                     name:MMNDataStoreUpdateNotification object:nil];
-        
         switch (m) {
             case NotesListViewControllerModeAllNotes: {
                 [[self navigationItem] setLeftBarButtonItem:[self editButtonItem]];
@@ -85,6 +81,15 @@
 }
 
 - (void)dealloc {
+    [self deregisterNotifications];
+}
+
+- (void)registerNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
+                                                 name:MMNDataStoreUpdateNotification object:nil];
+}
+
+- (void)deregisterNotifications {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -99,6 +104,13 @@
     // Register custom table view cells
     UINib *nib = [UINib nibWithNibName:@"NoteListCell" bundle:nil];
     [[self tableView] registerNib:nib forCellReuseIdentifier:@"NoteListCell"];
+    
+    [self registerNotifications];
+}
+
+- (void)viewDidUnload {
+    [super viewDidUnload];
+    [self deregisterNotifications];
 }
 
 // Returns an array of notes depending on the current mode:
