@@ -9,6 +9,7 @@
 #import "MMNAppDelegate.h"
 #import "NotesListViewController.h"
 #import "TagsListViewController.h"
+#import "SettingsViewController.h"
 #import "MMNDataStore.h"
 
 NSString * const MMNNotesMainTabIndexPrefKey = @"MMNNotesMainTabIndexPrefKey";
@@ -52,7 +53,9 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
     NotesListViewController *favsListVC = [[NotesListViewController alloc] initWithMode:NotesListViewControllerModeFavoriteNotes];
     UINavigationController *favsNavVC = [[UINavigationController alloc] initWithRootViewController:favsListVC];
     
-    NSArray *vcs = [NSArray arrayWithObjects:tagsNavVC, notesNavVC, favsNavVC, nil];
+    SettingsViewController *settingsVC = [[SettingsViewController alloc] init];
+    
+    NSArray *vcs = [NSArray arrayWithObjects:tagsNavVC, notesNavVC, favsNavVC, settingsVC, nil];
     tabVC = [[UITabBarController alloc] init];
     [tabVC setViewControllers:vcs];
     [tabVC setDelegate:self];
@@ -131,7 +134,12 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
-    // viewCOntroller in the tab is a UINavigationController. We are interrested in its root [0] element
+    // Don't display the ad banner in Settings
+    if ([viewController isKindOfClass:[SettingsViewController class]]) {
+        return;
+    }
+    
+    // viewController in the tab is a UINavigationController. We are interrested in its root [0] element
     UINavigationController *selectedNavVC = (UINavigationController *)viewController;
     UIViewController<BannerViewContainer> *vcInTab = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
     
