@@ -199,6 +199,11 @@
     //    [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, audioItem, flexiSpace, trashItem, nil] animated:YES];
     [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, trashItem, nil] animated:YES];
     
+    // Hide keyboard when the scroll view is tapped
+    UITapGestureRecognizer *tapGestureRecignizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleScrollViewTap:)];
+    tapGestureRecignizer.cancelsTouchesInView = NO;
+    [scrollView addGestureRecognizer:tapGestureRecignizer];
+    
     [self registerNotifications];
 }
 
@@ -211,8 +216,6 @@
     titleField = nil;
     bodyField = nil;
     tagsButton = nil;
-    //    scrollView = nil;
-    scrollView = nil;
     scrollView = nil;
     
     [self deregisterNotifications];
@@ -236,6 +239,12 @@
 
 - (IBAction)backgroundTapped:(id)sender {
     [[self view] endEditing:YES];
+}
+
+- (void)handleScrollViewTap:(UIGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        [[self view] endEditing:YES];
+    }
 }
 
 - (IBAction)titleFieldChanged:(id)sender {
