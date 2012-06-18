@@ -47,6 +47,8 @@
 		BFE49662157D47730039B213 /* note_toolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFE4965E157D47730039B213 /* note_toolbar@2x.png */; };
 		BFE49665157F680C0039B213 /* mic_toolbar.png in Resources */ = {isa = PBXBuildFile; fileRef = BFE49663157F680C0039B213 /* mic_toolbar.png */; };
 		BFE49666157F680C0039B213 /* mic_toolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFE49664157F680C0039B213 /* mic_toolbar@2x.png */; };
+		BFEA2212158F12D300E11DF6 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEA2211158F12D300E11DF6 /* StoreKit.framework */; };
+		BFEA2229158F389900E11DF6 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEA2228158F389900E11DF6 /* iAd.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +108,8 @@
 		BFE4965E157D47730039B213 /* note_toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "note_toolbar@2x.png"; sourceTree = "<group>"; };
 		BFE49663157F680C0039B213 /* mic_toolbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mic_toolbar.png; sourceTree = "<group>"; };
 		BFE49664157F680C0039B213 /* mic_toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mic_toolbar@2x.png"; sourceTree = "<group>"; };
+		BFEA2211158F12D300E11DF6 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		BFEA2228158F389900E11DF6 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +117,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFEA2229158F389900E11DF6 /* iAd.framework in Frameworks */,
+				BFEA2212158F12D300E11DF6 /* StoreKit.framework in Frameworks */,
 				BFE49649157BB7F00039B213 /* QuartzCore.framework in Frameworks */,
 				BF158A8D15765FEF00CDBE21 /* CoreData.framework in Frameworks */,
 				BF158A671576273400CDBE21 /* UIKit.framework in Frameworks */,
@@ -127,6 +133,7 @@
 		BF158A571576273400CDBE21 = {
 			isa = PBXGroup;
 			children = (
+				BFEA2228158F389900E11DF6 /* iAd.framework */,
 				BF158A6C1576273400CDBE21 /* MMNotes */,
 				BF158A651576273400CDBE21 /* Frameworks */,
 				BF158A631576273400CDBE21 /* Products */,
@@ -144,6 +151,7 @@
 		BF158A651576273400CDBE21 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BFEA2211158F12D300E11DF6 /* StoreKit.framework */,
 				BFE49648157BB7EF0039B213 /* QuartzCore.framework */,
 				BF158A8C15765FEF00CDBE21 /* CoreData.framework */,
 				BF158A661576273400CDBE21 /* UIKit.framework */,

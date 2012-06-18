@@ -7,8 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <iAd/iAd.h>
 
-@interface MMNAppDelegate : UIResponder <UIApplicationDelegate>
+@protocol BannerViewContainer <NSObject>
+
+- (void)showBannerView:(ADBannerView *)bannerView animated:(BOOL)animated;
+- (void)hideBannerView:(ADBannerView *)bannerView animated:(BOOL)animated;
+
+@end
+
+extern NSString * const BannerViewActionWillBegin;
+extern NSString * const BannerViewActionDidFinish;
+
+@interface MMNAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, ADBannerViewDelegate>
 {
     // The main tabbar VC (Tags/Notes/Favorites)
     UITabBarController *tabVC;

@@ -14,6 +14,9 @@
 #import "NoteListCell.h"
 
 @implementation NotesListViewController
+{
+    ADBannerView *_bannerView;
+}
 
 @synthesize mode = _mode, tag = _tag;
 
@@ -64,7 +67,7 @@
         }
         
         [[self navigationItem] setTitle:title];
-        [[self tabBarItem] setTitle:title];     
+        [[self tabBarItem] setTitle:title];
     }
     
     return self;
@@ -85,8 +88,11 @@
 }
 
 - (void)registerNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:)
-                                                 name:MMNDataStoreUpdateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(storeUpdated:) name:MMNDataStoreUpdateNotification object:nil];
+    
+    // iAd
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willBeginBannerViewActionNotification:) name:BannerViewActionWillBegin object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFinishBannerViewActionNotification:) name:BannerViewActionDidFinish object:nil];
 }
 
 - (void)deregisterNotifications {
@@ -113,7 +119,43 @@
     [self deregisterNotifications];
 }
 
-// Returns an array of notes depending on the current mode:
+- (void)showBannerView:(ADBannerView *)bannerView animated:(BOOL)animated
+{
+    _bannerView = bannerView;
+    self.tableView.tableFooterView = bannerView;
+}
+
+- (void)hideBannerView:(ADBannerView *)bannerView animated:(BOOL)animated
+{
+    self.tableView.tableFooterView = nil;
+    _bannerView = nil;
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    [self adjustBannerViewPosition];
+}
+
+- (void)adjustBannerViewPosition {
+    if (_bannerView) {
+        CGRect bannerFrame = _bannerView.frame;
+        CGFloat newOriginY = self.tableView.contentOffset.y + self.tableView.frame.size.height - bannerFrame.size.height;
+        CGRect newBannerFrame = CGRectMake(bannerFrame.origin.x, newOriginY, bannerFrame.size.width, bannerFrame.size.height);
+        _bannerView.frame = newBannerFrame;
+    }
+}
+
+- (void)willBeginBannerViewActionNotification:(NSNotification *)notification
+{
+    // No action
+}
+
+- (void)didFinishBannerViewActionNotification:(NSNotification *)notification
+{
+    // No action
+}
+
+// Returns an array of notes in regard to the current mode:
 // - all notes for NotesListViewControllerModeAllNotes,
 // - favorited notes for NotesListViewControllerModeFavoriteNotes,
 // - notes with a given tag for NotesListViewControllerModeNotesForTag
@@ -186,14 +228,10 @@
     [[self tableView] reloadData];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-//    || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    //    || UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
 @end

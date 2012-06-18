@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MMNAppDelegate.h"
 
 @class MMNTag;
 
@@ -24,7 +25,7 @@ typedef enum {
 // 
 // The view of this ctrl issupposed to be displayed on a paent tab view together with list of tags
 //
-@interface NotesListViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
+@interface NotesListViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, ADBannerViewDelegate, BannerViewContainer>
 {
 
 }

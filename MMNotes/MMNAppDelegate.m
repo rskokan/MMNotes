@@ -13,7 +13,14 @@
 
 NSString * const MMNNotesMainTabIndexPrefKey = @"MMNNotesMainTabIndexPrefKey";
 
+NSString * const BannerViewActionWillBegin = @"BannerViewActionWillBegin";
+NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
+
 @implementation MMNAppDelegate
+{
+    UIViewController<BannerViewContainer> *_currentTabController;
+    ADBannerView *_bannerView;
+}
 
 @synthesize window = _window;
 
@@ -26,8 +33,15 @@ NSString * const MMNNotesMainTabIndexPrefKey = @"MMNNotesMainTabIndexPrefKey";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    self.window = [[UIWindow alloc] initWithFrame:screenBounds];
+    self.window.backgroundColor = [UIColor whiteColor];
     // Override point for customization after application launch.
+    
+    // The ADBannerView will fix up the given size, we just want to ensure it is created at a location off the bottom of the screen.
+    // This ensures that the first animation doesn't come in from the top of the screen.
+    _bannerView = [[ADBannerView alloc] initWithFrame:CGRectMake(0.0, screenBounds.size.height, 0.0, 0.0)];
+    _bannerView.delegate = self;
 
     TagsListViewController *tagsListVC = [[TagsListViewController alloc] initWithMode:TagsListViewControllerModeView];
     UINavigationController *tagsNavVC = [[UINavigationController alloc] initWithRootViewController:tagsListVC];
@@ -41,13 +55,16 @@ NSString * const MMNNotesMainTabIndexPrefKey = @"MMNNotesMainTabIndexPrefKey";
     NSArray *vcs = [NSArray arrayWithObjects:tagsNavVC, notesNavVC, favsNavVC, nil];
     tabVC = [[UITabBarController alloc] init];
     [tabVC setViewControllers:vcs];
+    [tabVC setDelegate:self];
     [[self window] setRootViewController:tabVC];
-    
+
     // Select the lastly active tab
     NSInteger selectedTabIndex = [[NSUserDefaults standardUserDefaults] integerForKey:MMNNotesMainTabIndexPrefKey];
     [tabVC setSelectedIndex:selectedTabIndex];
     
-    self.window.backgroundColor = [UIColor whiteColor];
+    UINavigationController *selectedNavVC = (UINavigationController *)tabVC.selectedViewController;
+    _currentTabController = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
+
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -88,6 +105,45 @@ NSString * const MMNNotesMainTabIndexPrefKey = @"MMNNotesMainTabIndexPrefKey";
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
     NSLog(@"applicationDidReceiveMemoryWarning:");
+}
+
+- (void)bannerViewDidLoadAd:(ADBannerView *)banner
+{
+    [_currentTabController showBannerView:_bannerView animated:YES];
+}
+
+- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
+{
+    [_currentTabController hideBannerView:_bannerView animated:YES];
+    NSLog(@"Error loading iAd ads: %@", [error localizedDescription]);
+}
+
+- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:BannerViewActionWillBegin object:self];
+    return YES;
+}
+
+- (void)bannerViewActionDidFinish:(ADBannerView *)banner
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:BannerViewActionDidFinish object:self];
+}
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    // viewCOntroller in the tab is a UINavigationController. We are interrested in its root [0] element
+    UINavigationController *selectedNavVC = (UINavigationController *)viewController;
+    UIViewController<BannerViewContainer> *vcInTab = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
+    
+    if (_currentTabController == vcInTab) {
+        return;
+    }
+    
+    if (_bannerView.bannerLoaded) {
+        [_currentTabController hideBannerView:_bannerView animated:NO];
+        [vcInTab showBannerView:_bannerView animated:YES];
+    }
+    _currentTabController = vcInTab;
 }
 
 @end

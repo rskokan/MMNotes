@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MMNAppDelegate.h"
 
 @class MMNTag;
 @class MMNNote;
@@ -19,7 +20,7 @@ typedef enum {
 
 // List of Tags.
 // 
-@interface TagsListViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
+@interface TagsListViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, ADBannerViewDelegate, BannerViewContainer>
 {
     
     NSIndexPath *kMMNIndexPathZero;
