@@ -53,6 +53,8 @@
 		BFE49666157F680C0039B213 /* mic_toolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFE49664157F680C0039B213 /* mic_toolbar@2x.png */; };
 		BFEA2212158F12D300E11DF6 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEA2211158F12D300E11DF6 /* StoreKit.framework */; };
 		BFEA2229158F389900E11DF6 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEA2228158F389900E11DF6 /* iAd.framework */; };
+		BFFBDEF31590D6A000B169C4 /* Icon_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFBDEF21590D6A000B169C4 /* Icon_iPhone.png */; };
+		BFFBDEF51590D6F100B169C4 /* Icon_iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFBDEF41590D6F100B169C4 /* Icon_iPad.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -119,6 +121,8 @@
 		BFE49664157F680C0039B213 /* mic_toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mic_toolbar@2x.png"; sourceTree = "<group>"; };
 		BFEA2211158F12D300E11DF6 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		BFEA2228158F389900E11DF6 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		BFFBDEF21590D6A000B169C4 /* Icon_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon_iPhone.png; sourceTree = "<group>"; };
+		BFFBDEF41590D6F100B169C4 /* Icon_iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon_iPad.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,7 +146,8 @@
 		BF158A571576273400CDBE21 = {
 			isa = PBXGroup;
 			children = (
-				BFEA2228158F389900E11DF6 /* iAd.framework */,
+				BFFBDEF41590D6F100B169C4 /* Icon_iPad.png */,
+				BFFBDEF21590D6A000B169C4 /* Icon_iPhone.png */,
 				BF158A6C1576273400CDBE21 /* MMNotes */,
 				BF158A651576273400CDBE21 /* Frameworks */,
 				BF158A631576273400CDBE21 /* Products */,
@@ -160,6 +165,7 @@
 		BF158A651576273400CDBE21 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BFEA2228158F389900E11DF6 /* iAd.framework */,
 				BFEA2211158F12D300E11DF6 /* StoreKit.framework */,
 				BFE49648157BB7EF0039B213 /* QuartzCore.framework */,
 				BF158A8C15765FEF00CDBE21 /* CoreData.framework */,
@@ -348,6 +354,8 @@
 				BFB1C618158F8A3C008C1377 /* SettingsViewController.xib in Resources */,
 				BFB1C61C158F90DE008C1377 /* info_tabbar.png in Resources */,
 				BFB1C61D158F90DE008C1377 /* info_tabbar@2x.png in Resources */,
+				BFFBDEF31590D6A000B169C4 /* Icon_iPhone.png in Resources */,
+				BFFBDEF51590D6F100B169C4 /* Icon_iPad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,9 +471,47 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "4D9F54FA-B4C2-4581-865E-9BCA629F3478";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
+		};
+		BFFBDEEB1590C6E400B169C4 /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = AppStore;
+		};
+		BFFBDEEC1590C6E400B169C4 /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MMNotes/MMNotes.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Radek Skokan (SRZKBY88YF)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MMNotes/MMNotes-Prefix.pch";
+				INFOPLIST_FILE = "MMNotes/MMNotes-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "4D9F54FA-B4C2-4581-865E-9BCA629F3478";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = AppStore;
 		};
 /* End XCBuildConfiguration section */
 
@@ -475,6 +521,7 @@
 			buildConfigurations = (
 				BF158A781576273400CDBE21 /* Debug */,
 				BF158A791576273400CDBE21 /* Release */,
+				BFFBDEEB1590C6E400B169C4 /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -484,6 +531,7 @@
 			buildConfigurations = (
 				BF158A7B1576273400CDBE21 /* Debug */,
 				BF158A7C1576273400CDBE21 /* Release */,
+				BFFBDEEC1590C6E400B169C4 /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

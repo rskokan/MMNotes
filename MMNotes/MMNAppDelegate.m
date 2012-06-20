@@ -19,7 +19,7 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 
 @implementation MMNAppDelegate
 {
-    UIViewController<BannerViewContainer> *_currentTabController;
+    UIViewController<BannerViewContainer> *_currentIAdTabController;
     ADBannerView *_bannerView;
 }
 
@@ -39,11 +39,6 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
     self.window.backgroundColor = [UIColor whiteColor];
     // Override point for customization after application launch.
     
-    // The ADBannerView will fix up the given size, we just want to ensure it is created at a location off the bottom of the screen.
-    // This ensures that the first animation doesn't come in from the top of the screen.
-    _bannerView = [[ADBannerView alloc] initWithFrame:CGRectMake(0.0, screenBounds.size.height, 0.0, 0.0)];
-    _bannerView.delegate = self;
-
     TagsListViewController *tagsListVC = [[TagsListViewController alloc] initWithMode:TagsListViewControllerModeView];
     UINavigationController *tagsNavVC = [[UINavigationController alloc] initWithRootViewController:tagsListVC];
     
@@ -60,14 +55,25 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
     [tabVC setViewControllers:vcs];
     [tabVC setDelegate:self];
     [[self window] setRootViewController:tabVC];
-
+    
     // Select the lastly active tab
     NSInteger selectedTabIndex = [[NSUserDefaults standardUserDefaults] integerForKey:MMNNotesMainTabIndexPrefKey];
     [tabVC setSelectedIndex:selectedTabIndex];
     
     UINavigationController *selectedNavVC = (UINavigationController *)tabVC.selectedViewController;
-    _currentTabController = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
-
+    
+    // The ADBannerView will fix up the given size, we just want to ensure it is created at a location off the bottom of the screen.
+    // This ensures that the first animation doesn't come in from the top of the screen.
+    if (![SettingsViewController isProVersion]) {
+        _bannerView = [[ADBannerView alloc] initWithFrame:CGRectMake(0.0, screenBounds.size.height, 0.0, 0.0)];
+        _bannerView.delegate = self;
+        
+        // Don't display the ad banner in Settings
+        if (![selectedNavVC isKindOfClass:[SettingsViewController class]]) {
+            _currentIAdTabController = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
+        }
+    }
+    
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -88,7 +94,7 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
     
     // Save the active tab (Tags/Notes/Favorites)
     [[NSUserDefaults standardUserDefaults] setInteger:[tabVC selectedIndex] forKey:MMNNotesMainTabIndexPrefKey];
-//    [tabVC selectedIndex]
+    //    [tabVC selectedIndex]
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -112,12 +118,12 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-    [_currentTabController showBannerView:_bannerView animated:YES];
+    [_currentIAdTabController showBannerView:_bannerView animated:YES];
 }
 
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
-    [_currentTabController hideBannerView:_bannerView animated:YES];
+    [_currentIAdTabController hideBannerView:_bannerView animated:YES];
     NSLog(@"Error loading iAd ads: %@", [error localizedDescription]);
 }
 
@@ -134,24 +140,33 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
-    // Don't display the ad banner in Settings
-    if ([viewController isKindOfClass:[SettingsViewController class]]) {
-        return;
+    if ([SettingsViewController isProVersion]) {
+        if (_currentIAdTabController) {
+            [_currentIAdTabController hideBannerView:_bannerView animated:NO];
+            _currentIAdTabController = nil;
+            _bannerView = nil;
+        }
+        
+    } else {
+        // Don't display the ad banner in Settings
+        if ([viewController isKindOfClass:[SettingsViewController class]]) {
+            return;
+        }
+        
+        // viewController in the tab is a UINavigationController. We are interrested in its root [0] element
+        UINavigationController *selectedNavVC = (UINavigationController *)viewController;
+        UIViewController<BannerViewContainer> *vcInTab = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
+        
+        if (_currentIAdTabController == vcInTab) {
+            return;
+        }
+        
+        if (_bannerView.bannerLoaded) {
+            [_currentIAdTabController hideBannerView:_bannerView animated:NO];
+            [vcInTab showBannerView:_bannerView animated:YES];
+        }
+        _currentIAdTabController = vcInTab;
     }
-    
-    // viewController in the tab is a UINavigationController. We are interrested in its root [0] element
-    UINavigationController *selectedNavVC = (UINavigationController *)viewController;
-    UIViewController<BannerViewContainer> *vcInTab = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
-    
-    if (_currentTabController == vcInTab) {
-        return;
-    }
-    
-    if (_bannerView.bannerLoaded) {
-        [_currentTabController hideBannerView:_bannerView animated:NO];
-        [vcInTab showBannerView:_bannerView animated:YES];
-    }
-    _currentTabController = vcInTab;
 }
 
 @end
