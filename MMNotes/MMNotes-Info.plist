@@ -16,6 +16,20 @@
 			<array>
 				<string>Icon_iPhone.png</string>
 				<string>Icon_iPad.png</string>
+				<string>mmnotes_icon_iphone@2x.png</string>
+				<string>mmnotes_icon_iphone.png</string>
+				<string>mmnotes_icon_ipad@2x.png</string>
+				<string>mmnotes_icon_ipad.png</string>
+				<string>Default.png</string>
+				<string>Default@2x.png</string>
+				<string>Default-Portrait~ipad.png</string>
+				<string>Default-Portrait@2x~ipad.png</string>
+				<string>Default-Landscape@2x~ipad.png</string>
+				<string>Default-Landscape~ipad.png</string>
+				<string>Default-Landscape~ipad.png</string>
+				<string>Default-Landscape@2x~ipad.png</string>
+				<string>Default-Landscape~ipad.png</string>
+				<string>Default-Landscape@2x~ipad.png</string>
 			</array>
 		</dict>
 	</dict>
