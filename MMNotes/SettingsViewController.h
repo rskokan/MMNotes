@@ -12,6 +12,11 @@
 #import <StoreKit/StoreKit.h>
 
 @interface SettingsViewController : UIViewController <SKProductsRequestDelegate, SKPaymentTransactionObserver>
+{
+    
+    __weak IBOutlet UIActivityIndicatorView *activityIndicator;
+}
+
 @property (weak, nonatomic) IBOutlet UIButton *buyButton;
 
 // Indicates whether the user has bought the Pro version

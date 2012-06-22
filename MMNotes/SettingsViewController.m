@@ -76,12 +76,15 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
         self.view.backgroundColor = [UIColor lightGrayColor];
     }
     
+    activityIndicator.hidden = YES;
+    
     [self updateBuyButton];
 }
 
 - (void)viewDidUnload
 {
     [self setBuyButton:nil];
+    activityIndicator = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -93,6 +96,9 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
 }
 
 - (IBAction)buyButtonTapped:(id)sender {
+    activityIndicator.hidden = NO;
+    [activityIndicator startAnimating];
+    
     [self requestProductData];
 }
 
@@ -109,6 +115,9 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
 {
     NSArray *products = response.products;
     NSLog(@"Product response for %@ received. Products: %@; invalidProductIdentifiers: %@", MMNotesProIdentifier, products, response.invalidProductIdentifiers);
+    
+    activityIndicator.hidden = YES;
+    [activityIndicator stopAnimating];
     
     SKProduct *productToPurchase = nil;
     for (SKProduct *p in products) {
