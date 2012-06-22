@@ -158,7 +158,6 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
     
     ctx = [[NSManagedObjectContext alloc] init];
     [ctx setPersistentStoreCoordinator:psc];
-    [ctx setUndoManager:nil];
     [ctx setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
 }
 
@@ -215,6 +214,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
     if (!success) {
         NSLog(@"Error saving data: %@.\n Trying to re-open DB (perhaps iCloud was disabled)", [err localizedDescription]);
         // TODO: iOS 6 will have NSUbiquityIdentityDidChangeNotification to detect iCloud account changes
+        [ctx reset];
         [self openDB];
         [ctx save:nil]; // It does not save here.
         
