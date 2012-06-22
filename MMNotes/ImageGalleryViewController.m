@@ -118,6 +118,16 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self reconfigureImageContentView];
+    
+    // pages are created on demand
+    // load the visible page
+    // load the page on either side to avoid flashes when the user starts scrolling
+    //
+    [self loadScrollViewWithPage:currentPage - 1];
+    [self loadScrollViewWithPage:currentPage];
+    [self loadScrollViewWithPage:currentPage + 1];
 }
 
 - (void)viewDidLoad
@@ -142,16 +152,6 @@
     
     // First display of the view, go to the 1st page
     pageControl.currentPage = currentPage;
-    
-    // pages are created on demand
-    // load the visible page
-    // load the page on either side to avoid flashes when the user starts scrolling
-    //
-    [self loadScrollViewWithPage:currentPage - 1];
-    [self loadScrollViewWithPage:currentPage];
-    [self loadScrollViewWithPage:currentPage + 1];
-    
-    [self reconfigureImageContentView];
     
     // TODO: temporarily disabled because of a bug in storeUpdated:
 //    [self registerNotifications];

@@ -294,7 +294,7 @@
     
     NSDictionary *info = [notif userInfo];
     CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    // conversion from screen to view ccrdinates
+    // conversion from screen to view coordinates
     kbRect = [self.view convertRect:kbRect fromView:nil];
     
     // Adjust the bottom content inset of the scroll view by the keyboard height
