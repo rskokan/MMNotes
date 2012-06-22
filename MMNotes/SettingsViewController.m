@@ -70,7 +70,11 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    } else {
+        self.view.backgroundColor = [UIColor lightGrayColor];
+    }
     
     [self updateBuyButton];
 }

@@ -158,6 +158,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    } else {
+        self.view.backgroundColor = [UIColor lightGrayColor];
+    }
+    
     [[bodyField layer] setBorderWidth:1];
     [[bodyField layer] setBorderColor:[[UIColor grayColor] CGColor]];
     
