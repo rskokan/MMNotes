@@ -332,7 +332,6 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
 }
 
 - (void)removeNote:(MMNNote *)note {
-    // TODO: Remove all associated attachments
     [ctx deleteObject:note];
     [allNotes removeObjectIdenticalTo:note];
 }
