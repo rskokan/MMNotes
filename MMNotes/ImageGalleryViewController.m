@@ -11,6 +11,7 @@
 #import "MMNNote.h"
 #import "ImageViewController.h"
 #import "MMNDataStore.h"
+#import "GAUtils.h"
 
 @interface ImageGalleryViewController ()
 
@@ -130,6 +131,11 @@
     [self loadScrollViewWithPage:currentPage + 1];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[GAUtils sharedUtils] trackPageView:[NSString stringWithFormat:@"ImageGallery, nrOfImages=%d", [[note images] count]]];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -201,11 +207,7 @@
     currentPage = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     pageControl.currentPage = currentPage;
     
-    // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)
-    // TODO: it is slow to load the surrounding pages. Load them in background, maybe via the task queue
-//    [self loadScrollViewWithPage:currentPage - 1];
     [self loadScrollViewWithPage:currentPage];
-//    [self loadScrollViewWithPage:currentPage + 1];
 }
 
 // Releases ImageViewController that are not surrounding the page being currently displayed

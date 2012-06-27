@@ -7,6 +7,7 @@
 //
 
 #import "SettingsViewController.h"
+#import "GAUtils.h"
 
 NSString * const MMNotesProIdentifier = @"MMNotesPro";
 NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPrefKey";
@@ -90,6 +91,12 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
     // e.g. self.myOutlet = nil;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [[GAUtils sharedUtils] trackPageView:@"Settings"];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
@@ -100,6 +107,8 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
     [activityIndicator startAnimating];
     
     [self requestProductData];
+    
+    [[GAUtils sharedUtils] trackEventWithCategory:@"Purchase" action:@"Buy botton tapped" label:nil];
 }
 
 - (void) requestProductData
@@ -128,6 +137,7 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
     if (!productToPurchase) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Pro Version Not Found" message:@"The Pro version has not been found in the App Store. Please try later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
+        [[GAUtils sharedUtils] trackEventWithCategory:@"Purchase" action:@"Product not found" label:MMNotesProIdentifier];
         return;
     }
     
@@ -163,14 +173,18 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
     [self updateToProVersion];
     
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+    
+    [[GAUtils sharedUtils] trackEventWithCategory:@"Purchase" action:@"Purchase finished" label:nil];
 }
 
-// The user successfully purchased a product
+// The user successfully restored the previously purchased product
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction {
     NSLog(@"Product restored: %@", transaction.payment.productIdentifier);
     [self updateToProVersion];
     
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+    
+    [[GAUtils sharedUtils] trackEventWithCategory:@"Purchase" action:@"Purchase finished - restored" label:nil];
 }
 
 - (void)failedTransaction:(SKPaymentTransaction *) transaction {
@@ -183,6 +197,8 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
     }
     
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+    
+    [[GAUtils sharedUtils] trackEventWithCategory:@"Purchase" action:@"Purchase failed" label:transaction.error.localizedDescription];
 }
 
 // The user has the Pro version (either just purchased or restored).

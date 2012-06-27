@@ -12,6 +12,7 @@
 #import "MMNNote.h"
 #import "TagsListViewController.h"
 #import "ImageGalleryViewController.h"
+#import "GAUtils.h"
 
 @interface NoteDetailViewController ()
 
@@ -137,6 +138,11 @@
     
     [self updateFavoriteItemStatus];
     [self updatePhotoItemStatus];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[GAUtils sharedUtils] trackPageView:@"NoteDetail"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

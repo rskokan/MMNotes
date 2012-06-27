@@ -12,6 +12,7 @@
 #import "MMNNote.h"
 #import "TagEditStyleCell.h"
 #import "NotesListViewController.h"
+#import "GAUtils.h"
 
 @implementation TagsListViewController
 {
@@ -287,6 +288,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[self tableView] reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSString *gaMessage = [NSString stringWithFormat:@"TagsList, mode=%d, nrOfTags=%d", [self mode], [[[MMNDataStore sharedStore] allTags] count]];
+    [[GAUtils sharedUtils] trackPageView:gaMessage];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

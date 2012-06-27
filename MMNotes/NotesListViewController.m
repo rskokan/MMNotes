@@ -12,6 +12,7 @@
 #import "MMNNote.h"
 #import "MMNTag.h"
 #import "NoteListCell.h"
+#import "GAUtils.h"
 
 @implementation NotesListViewController
 {
@@ -226,6 +227,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[self tableView] reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSString *gaMessage = [NSString stringWithFormat:@"NotesList, mode=%d, nrOfNotes=%d", [self mode], [[self actualNotes] count]];
+    [[GAUtils sharedUtils] trackPageView:gaMessage];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
