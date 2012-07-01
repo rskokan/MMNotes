@@ -86,7 +86,7 @@
 								<string key="NSFrame">{{20, 59}, {280, 28}}</string>
 								<reference key="NSSuperview" ref="789359656"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="370617259"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -121,6 +121,7 @@
 								<string key="NSFrame">{{20, 95}, {280, 345}}</string>
 								<reference key="NSSuperview" ref="789359656"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">1</int>
@@ -188,19 +189,19 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">bodyField</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="370617259"/>
-					</object>
-					<int key="connectionID">9</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">scrollView</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="789359656"/>
 					</object>
 					<int key="connectionID">23</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">bodyField</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="370617259"/>
+					</object>
+					<int key="connectionID">9</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -324,7 +325,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">24</int>
+			<int key="maxID">26</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -352,6 +353,7 @@
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="bodyField">UITextView</string>
+						<string key="bodyFieldContainer">UIView</string>
 						<string key="scrollView">UIScrollView</string>
 						<string key="tagsButton">UIButton</string>
 						<string key="titleField">UITextField</string>
@@ -360,6 +362,10 @@
 						<object class="IBToOneOutletInfo" key="bodyField">
 							<string key="name">bodyField</string>
 							<string key="candidateClassName">UITextView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bodyFieldContainer">
+							<string key="name">bodyFieldContainer</string>
+							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="scrollView">
 							<string key="name">scrollView</string>

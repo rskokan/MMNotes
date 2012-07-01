@@ -160,7 +160,7 @@
     pageControl.currentPage = currentPage;
     
     // TODO: temporarily disabled because of a bug in storeUpdated:
-//    [self registerNotifications];
+    //    [self registerNotifications];
 }
 
 - (void)nullAllImageControllers {
@@ -261,8 +261,19 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-//    || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        return true;
+    } else {
+        return (interfaceOrientation == UIInterfaceOrientationPortrait)
+        || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    }
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    [self reconfigureImageContentView];
+    // Reload the current and surrounding pages
+    [self changePage:nil];
 }
 
 - (IBAction)takePhoto:(id)sender {

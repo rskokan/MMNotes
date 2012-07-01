@@ -212,9 +212,17 @@
     [self setToolbarItems:[NSArray arrayWithObjects:favoriteItem, flexiSpace, photoItem, flexiSpace, trashItem, nil] animated:YES];
     
     // Hide keyboard when the scroll view is tapped
-    UITapGestureRecognizer *tapGestureRecignizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleScrollViewTap:)];
-    tapGestureRecignizer.cancelsTouchesInView = NO;
-    [scrollView addGestureRecognizer:tapGestureRecignizer];
+    UITapGestureRecognizer *backgroundTapGestureRecignizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleScrollViewTap:)];
+    backgroundTapGestureRecignizer.cancelsTouchesInView = NO;
+    [scrollView addGestureRecognizer:backgroundTapGestureRecignizer];
+    
+    // Find the position where it was tapped in the bodyField in order to scroll to that point when the keyboard is shown.
+    // It is because when using UIKeyboardWillShowNotification, the bodyField.selectedTextRange is nill (it is ok with UIKeyboardDidShowNotification, but then I cannot animate the scrolling together with the keyboard animation.
+    // TODO: need to solve the ordr of multiple recognizers. This one must be called before the UITextView standard one
+//    UITapGestureRecognizer *bodyFieldTapGestureRecignizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBodyFieldTap:)];
+//    bodyFieldTapGestureRecignizer.cancelsTouchesInView = NO;
+//    bodyFieldTapGestureRecignizer.delegate = self;
+//    [bodyField addGestureRecognizer:bodyFieldTapGestureRecignizer];
     
     [self registerNotifications];
 }
@@ -239,8 +247,12 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-//    || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        return true;
+    } else {
+        return (interfaceOrientation == UIInterfaceOrientationPortrait)
+        || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    }
 }
 
 - (IBAction)showTagsPicker:(id)sender {
@@ -259,12 +271,26 @@
     }
 }
 
+- (void)handleBodyFieldTap:(UIGestureRecognizer *)sender {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        tappedLocationInBodyField = [sender locationInView:bodyField];
+        NSLog(@"setting: tappedLocationInBodyField.y=%0.0f", tappedLocationInBodyField.y);
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    // To allow proper functionality of my and UITextView gesture recognizers
+    // TODO: but how to guarantee the order? I need that my handleBodyFieldTap: is called before the standard UITextView's one
+    return YES;
+}
+
+
 - (IBAction)titleFieldChanged:(id)sender {
     [[self navigationItem] setTitle:[titleField text]];
 }
 
 // Hide keyboard when return is pressed
-// TODO: check; we also have more text fields
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
@@ -277,6 +303,7 @@
 }
 
 - (void)registerNotifications {
+    // TODO: It will be better to use UIKeyboardDidShowNotification to animate the view scrolling together with the keyboard show animation, but with UIKeyboardDidShowNotification the selectedTextRange is nil. So find another way how to determine the cursor position in the textField
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector:@selector(keyboardWasShown:)
                                                  name:UIKeyboardDidShowNotification
@@ -302,49 +329,56 @@
 
 // Called when the UIKeyboardDidShowNotification is sent.
 - (void)keyboardWasShown:(NSNotification *)notif {
-    normalBodyFieldFrame = [bodyField frame];
-    
     NSDictionary *info = [notif userInfo];
     CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     // conversion from screen to view coordinates
     kbRect = [self.view convertRect:kbRect fromView:nil];
     
-    // Adjust the bottom content inset of the scroll view by the keyboard height
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbRect.size.height, 0.0); // ? shouldn't be kb.origin.y?
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbRect.origin.y, 0.0);
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, [[self view] frame].size.height, 0.0);
-//    [scrollView setContentInset:contentInsets];
-//    [scrollView setScrollIndicatorInsets:contentInsets];
-    
-    // Scroll the target field into view
     CGRect visibleRect = [[self view] frame];
-    visibleRect.size.height -= kbRect.size.height;
-    if (!CGRectContainsPoint(visibleRect, activeField.frame.origin)) {
-        // the activeField is not visible, need to scroll
-        //        CGPoint newActiveFieldOrigin = CGPointMake(0.0, activeField.frame.origin.y + kbSize.height);
-        CGPoint newActiveFieldOrigin = CGPointMake(0.0, activeField.frame.origin.y);
-        [scrollView setContentOffset:newActiveFieldOrigin animated:YES];
-        
-        
-        // Resize the TextView, move its bottom up so it is not obscured by the keyboard
-        CGRect shrunkenFrame = [bodyField frame];
-        shrunkenFrame.size.height = kbRect.origin.y - 5; // 5px distance between the keyboard and the text view
-        [bodyField setFrame:shrunkenFrame];
+    CGRect extendedRect = CGRectMake(0.0, 0.0, visibleRect.size.width, visibleRect.size.height + kbRect.size.height);
+    scrollView.contentSize = extendedRect.size;
+    
+    // Either titleField or bodyField
+    UIView<UITextInput> *activeTextField = (UIView<UITextInput> *)activeField;
+    
+    CGFloat newVisibleOriginY;
+    if (activeTextField.selectedTextRange != nil) {
+        CGPoint cursorPosition = [activeTextField caretRectForPosition:activeTextField.selectedTextRange.start].origin;
+        newVisibleOriginY = activeTextField.frame.origin.y + cursorPosition.y;
     } else {
-        
-        // Resize the TextView, move its bottom up so it is not obscured by the keyboard
-        CGRect shrunkenFrame = [bodyField frame];
-        shrunkenFrame.size.height = kbRect.origin.y - [bodyField frame].origin.y - 5; // 5px distance between the keyboard and the text view
-        [bodyField setFrame:shrunkenFrame];
+        // Tapped in bodyField, using the location from the tap
+        newVisibleOriginY = activeTextField.frame.origin.y + tappedLocationInBodyField.y;
+        NSLog(@"Using tappedLocationInBodyField.y=%0.0f", tappedLocationInBodyField.y);
     }
+    
+    NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSTimeInterval animationDuration;
+    [animationDurationValue getValue:&animationDuration];
+    [UIView beginAnimations:@"ScrollForKeyboard" context:NULL];
+    [UIView setAnimationDuration:animationDuration];
+    
+    
+    CGRect newVisibleRect = CGRectMake(0.0, newVisibleOriginY, visibleRect.size.width, visibleRect.size.height);
+    
+    [scrollView scrollRectToVisible:newVisibleRect animated:YES];
+    [UIView commitAnimations];
+    
+    [scrollView flashScrollIndicators];
 }
 
 // Called when the UIKeyboardWillHideNotification is sent
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification {
-    [scrollView setContentInset:UIEdgeInsetsZero];
-    [scrollView setScrollIndicatorInsets:UIEdgeInsetsZero];
+    NSDictionary *info = [aNotification userInfo];
+    NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSTimeInterval animationDuration;
+    [animationDurationValue getValue:&animationDuration];
+    [UIView beginAnimations:@"ScrollForKeyboard" context:NULL];
+    [UIView setAnimationDuration:animationDuration];
     
-    [bodyField setFrame:normalBodyFieldFrame];
+    CGRect visibleRect = [[self view] frame];
+    scrollView.contentSize = visibleRect.size;
+    
+    [UIView commitAnimations];
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -365,11 +399,6 @@
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     activeField = nil;
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self backgroundTapped:nil];
-    [super touchesBegan:touches withEvent:event];
 }
 
 @end

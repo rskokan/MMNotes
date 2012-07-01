@@ -10,7 +10,7 @@
 
 @class MMNNote;
 
-@interface NoteDetailViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIAlertViewDelegate>
+@interface NoteDetailViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIAlertViewDelegate, UIGestureRecognizerDelegate>
 {
     __weak IBOutlet UIScrollView *scrollView;
     __weak IBOutlet UITextField *titleField;
@@ -19,6 +19,8 @@
     
     // Used for scrolling when the keyboard gets displayed
     UIView *activeField;
+    
+    CGPoint tappedLocationInBodyField;
     
     // The frame of the bodyField when there is no keyboard
     CGRect normalBodyFieldFrame;

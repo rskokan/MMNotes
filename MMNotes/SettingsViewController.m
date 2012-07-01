@@ -99,7 +99,12 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        return true;
+    } else {
+        return (interfaceOrientation == UIInterfaceOrientationPortrait)
+        || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    }
 }
 
 - (IBAction)buyButtonTapped:(id)sender {

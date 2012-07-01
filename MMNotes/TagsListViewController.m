@@ -298,8 +298,12 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-//    || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        return true;
+    } else {
+        return (interfaceOrientation == UIInterfaceOrientationPortrait)
+        || UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    }
 }
 
 - (void)showBannerView:(ADBannerView *)bannerView animated:(BOOL)animated
