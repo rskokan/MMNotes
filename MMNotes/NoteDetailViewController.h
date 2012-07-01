@@ -22,9 +22,6 @@
     
     CGPoint tappedLocationInBodyField;
     
-    // The frame of the bodyField when there is no keyboard
-    CGRect normalBodyFieldFrame;
-    
     // The bar buttom to toggle and indicate in the note detail view whether the note is a favorite
     UIBarButtonItem *favoriteItem;
     
