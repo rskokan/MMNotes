@@ -107,13 +107,16 @@
     }
     
     // add the controller's view to the scroll view
-    if (controller.view.superview == nil)
-    {
-        CGRect frame = scrollView.frame;
-        frame.origin.x = frame.size.width * page;
-        frame.origin.y = 0;
+    CGRect frame = scrollView.frame;
+    frame.origin.x = frame.size.width * page;
+    frame.origin.y = 0;
+    if (controller.view.superview == nil) {
         controller.view.frame = frame;
         [scrollView addSubview:controller.view];
+    } else if (!CGRectEqualToRect(frame, controller.view.frame)) {
+        // make sure the frame size matches the current frame size (autorotation)
+        NSLog(@"Updating image frame size");
+        controller.view.frame = frame;
     }
 }
 
@@ -269,8 +272,9 @@
     }
 }
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    
     [self reconfigureImageContentView];
     // Reload the current and surrounding pages
     [self changePage:nil];
