@@ -219,10 +219,10 @@
     // Find the position where it was tapped in the bodyField in order to scroll to that point when the keyboard is shown.
     // It is because when using UIKeyboardWillShowNotification, the bodyField.selectedTextRange is nill (it is ok with UIKeyboardDidShowNotification, but then I cannot animate the scrolling together with the keyboard animation.
     // TODO: need to solve the ordr of multiple recognizers. This one must be called before the UITextView standard one
-//    UITapGestureRecognizer *bodyFieldTapGestureRecignizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBodyFieldTap:)];
-//    bodyFieldTapGestureRecignizer.cancelsTouchesInView = NO;
-//    bodyFieldTapGestureRecignizer.delegate = self;
-//    [bodyField addGestureRecognizer:bodyFieldTapGestureRecignizer];
+    //    UITapGestureRecognizer *bodyFieldTapGestureRecignizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBodyFieldTap:)];
+    //    bodyFieldTapGestureRecignizer.cancelsTouchesInView = NO;
+    //    bodyFieldTapGestureRecignizer.delegate = self;
+    //    [bodyField addGestureRecognizer:bodyFieldTapGestureRecignizer];
     
     [self registerNotifications];
 }
@@ -338,30 +338,33 @@
     CGRect extendedRect = CGRectMake(0.0, 0.0, visibleRect.size.width, visibleRect.size.height + kbRect.size.height);
     scrollView.contentSize = extendedRect.size;
     
-    // Either titleField or bodyField
-    UIView<UITextInput> *activeTextField = (UIView<UITextInput> *)activeField;
-    
-    CGFloat newVisibleOriginY;
-    if (activeTextField.selectedTextRange != nil) {
-        CGPoint cursorPosition = [activeTextField caretRectForPosition:activeTextField.selectedTextRange.start].origin;
-        newVisibleOriginY = activeTextField.frame.origin.y + cursorPosition.y;
-    } else {
-        // Tapped in bodyField, using the location from the tap
-        newVisibleOriginY = activeTextField.frame.origin.y + tappedLocationInBodyField.y;
-        NSLog(@"Using tappedLocationInBodyField.y=%0.0f", tappedLocationInBodyField.y);
+    // On iPhone, scroll the visible frame to the cursor position
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        // Either titleField or bodyField
+        UIView<UITextInput> *activeTextField = (UIView<UITextInput> *)activeField;
+        
+        CGFloat newVisibleOriginY;
+        if (activeTextField.selectedTextRange != nil) {
+            CGPoint cursorPosition = [activeTextField caretRectForPosition:activeTextField.selectedTextRange.start].origin;
+            newVisibleOriginY = activeTextField.frame.origin.y + cursorPosition.y;
+        } else {
+            // Tapped in bodyField, using the location from the tap
+            newVisibleOriginY = activeTextField.frame.origin.y + tappedLocationInBodyField.y;
+            NSLog(@"Using tappedLocationInBodyField.y=%0.0f", tappedLocationInBodyField.y);
+        }
+        
+        NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+        NSTimeInterval animationDuration;
+        [animationDurationValue getValue:&animationDuration];
+        [UIView beginAnimations:@"ScrollForKeyboard" context:NULL];
+        [UIView setAnimationDuration:animationDuration];
+        
+        
+        CGRect newVisibleRect = CGRectMake(0.0, newVisibleOriginY, visibleRect.size.width, visibleRect.size.height);
+        
+        [scrollView scrollRectToVisible:newVisibleRect animated:YES];
+        [UIView commitAnimations];
     }
-    
-    NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    NSTimeInterval animationDuration;
-    [animationDurationValue getValue:&animationDuration];
-    [UIView beginAnimations:@"ScrollForKeyboard" context:NULL];
-    [UIView setAnimationDuration:animationDuration];
-    
-    
-    CGRect newVisibleRect = CGRectMake(0.0, newVisibleOriginY, visibleRect.size.width, visibleRect.size.height);
-    
-    [scrollView scrollRectToVisible:newVisibleRect animated:YES];
-    [UIView commitAnimations];
     
     [scrollView flashScrollIndicators];
 }
