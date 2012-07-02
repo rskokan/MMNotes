@@ -20,6 +20,8 @@
     
     // Keeps history of the previous mode. E.g. to know that we switched from Tag selection for a note to Adding new tag (would be more elegant with a stack impl.)
     TagsListViewControllerMode _oldMode;
+    
+    BOOL _swipedToDelete;
 }
 
 @synthesize mode = _mode, currentTag = _currentTag, note = _note;
@@ -31,6 +33,7 @@
         kMMNIndexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
         _mode = m;
         _oldMode = TagsListViewControllerModeNone;
+        _swipedToDelete = NO;
         NSString *title;
         if (m == TagsListViewControllerModeSelect) {
             title = @"Select Tags";
@@ -94,10 +97,6 @@
     [[self tableView] reloadData];
 }
 
-- (void)updateBarButtons {
-    
-}
-
 - (void)displayAddTagBarButton {
     UIBarButtonItem *bbiAdd = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
                                UIBarButtonSystemItemAdd target:self action:@selector(addNewTag:)];
@@ -126,8 +125,20 @@
     [[self navigationItem] setRightBarButtonItem:bbiDone];
 }
 
+- (void)tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    _swipedToDelete = YES;
+}
+
+- (void)tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    _swipedToDelete = NO;
+}
+
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
     [super setEditing:editing animated:animated];
+    
+    if (_swipedToDelete) {
+        return;
+    }
     
     if (editing) {
         // Hide the Add New Tag bar button (the right one)
@@ -141,23 +152,40 @@
     [[self tableView] reloadData];
 }
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        MMNDataStore *store = [MMNDataStore sharedStore];
+        NSArray *tags = [store allTags];
+        MMNTag *tag = [tags objectAtIndex:[indexPath row]];
+        [store removeTag:tag];
+        [[MMNDataStore sharedStore] saveChanges];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
 // In the edit mode, users can change tag names. So when leaving the edit mode,
-// we will iterate through all the rows and update the relevant element in the tag store
+// we will iterate through all the rows and update the relevant elements in the tag store.
+// It is only supposed to be called in the 
 - (void)updateDataModelAfterEditing {
     NSMutableArray *tagsToBeRemoved = [NSMutableArray array];
-    
     NSArray *allTags = [[MMNDataStore sharedStore] allTags];
+    
     for (int i = 0; i < [allTags count]; i++) {
         MMNTag *tag = [allTags objectAtIndex:i];
         NSIndexPath *ip = [NSIndexPath indexPathForRow:i inSection:0];
-        TagEditStyleCell *cell = (TagEditStyleCell *)[[self tableView] cellForRowAtIndexPath:ip]; // In edit mode, so the cell should be TagEditStyleCell
-        NSString *editedText = [cell tagName];
-        NSString *trimmedTagText = [editedText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSLog(@"Old tag text=%@, new text=%@", [tag name], trimmedTagText);
-        if ([trimmedTagText length] == 0) {
-            [tagsToBeRemoved addObject:tag];
-        } else {
-            [tag setName:trimmedTagText];
+        UITableViewCell *cell = [[self tableView] cellForRowAtIndexPath:ip];
+        
+        if ([cell isKindOfClass:[TagEditStyleCell class]]) {
+            // "True" edit mode
+            TagEditStyleCell *editCell = (TagEditStyleCell *)cell;
+            NSString *editedText = [editCell tagName];
+            NSString *trimmedTagText = [editedText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            NSLog(@"Old tag text=%@, new text=%@", [tag name], trimmedTagText);
+            if ([trimmedTagText length] == 0) {
+                [tagsToBeRemoved addObject:tag];
+            } else {
+                [tag setName:trimmedTagText];
+            }   
         }
     }
     
@@ -278,17 +306,6 @@
     [self displayAddingTagModeBarButtonItems];
     [[self tableView] insertRowsAtIndexPaths:[NSArray arrayWithObject:kMMNIndexPathZero] withRowAnimation:UITableViewRowAnimationAutomatic];    
     [self setCurrentTag:[[MMNDataStore sharedStore] createTag]];
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        MMNDataStore *store = [MMNDataStore sharedStore];
-        NSArray *tags = [store allTags];
-        MMNTag *tag = [tags objectAtIndex:[indexPath row]];
-        [store removeTag:tag];
-        [[MMNDataStore sharedStore] saveChanges];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
