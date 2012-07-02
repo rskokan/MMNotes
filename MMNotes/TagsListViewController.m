@@ -204,11 +204,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    int allTagsCount = [[[MMNDataStore sharedStore] allTags] count];
-    if ([self mode] == TagsListViewControllerModeAdd)
-        return allTagsCount + 1;
-    
-    return allTagsCount;
+    return [[[MMNDataStore sharedStore] allTags] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -303,9 +299,9 @@
 
 - (IBAction)addNewTag:(id)sender {
     [self setMode:TagsListViewControllerModeAdd];
+    [self setCurrentTag:[[MMNDataStore sharedStore] createTag]];
     [self displayAddingTagModeBarButtonItems];
     [[self tableView] insertRowsAtIndexPaths:[NSArray arrayWithObject:kMMNIndexPathZero] withRowAnimation:UITableViewRowAnimationAutomatic];    
-    [self setCurrentTag:[[MMNDataStore sharedStore] createTag]];
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
