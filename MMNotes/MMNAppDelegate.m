@@ -133,7 +133,7 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
     [_currentIAdTabController hideBannerView:_bannerView animated:YES];
-    NSLog(@"Error loading iAd ads: %@", [error localizedDescription]);
+    NSLog(@"Error loading iAd ads: %@", error);
 }
 
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave

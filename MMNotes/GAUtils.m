@@ -41,21 +41,21 @@ const NSInteger kGANDispatchPeriodSec = 30;
                                                          name:@"deviceModel"
                                                         value:[[UIDevice currentDevice] model]
                                                     withError:&error]) {
-        NSLog(@"Error (GA) setting custom variable deviceModel: %@", [error localizedDescription]);
+        NSLog(@"Error (GA) setting custom variable deviceModel: %@", error);
     }
     
     if (![[GANTracker sharedTracker] setCustomVariableAtIndex:2
                                                          name:@"systemName"
                                                         value:[[UIDevice currentDevice] systemName]
                                                     withError:&error]) {
-        NSLog(@"Error (GA) setting custom variable systemName: %@", [error localizedDescription]);
+        NSLog(@"Error (GA) setting custom variable systemName: %@", error);
     }
     
     if (![[GANTracker sharedTracker] setCustomVariableAtIndex:3
                                                          name:@"systemVersion"
                                                         value:[[UIDevice currentDevice] systemVersion]
                                                     withError:&error]) {
-        NSLog(@"Error (GA) setting custom variable systemVersion: %@", [error localizedDescription]);
+        NSLog(@"Error (GA) setting custom variable systemVersion: %@", error);
     }
     
     // send 100% of the data, no sampling
@@ -72,7 +72,7 @@ const NSInteger kGANDispatchPeriodSec = 30;
     NSError *error;
     if (![[GANTracker sharedTracker] trackPageview:pageName
                                          withError:&error]) {
-        NSLog(@"Error (GA) tracking page view: %@", [error localizedDescription]);
+        NSLog(@"Error (GA) tracking page view: %@", error);
     }
     
 //    BOOL dispatched = [[GANTracker sharedTracker] dispatch];
@@ -88,7 +88,7 @@ const NSInteger kGANDispatchPeriodSec = 30;
                                           label:aLabel
                                           value:0
                                       withError:&error]) {
-        NSLog(@"Error (GA) tracking event: %@", [error localizedDescription]);
+        NSLog(@"Error (GA) tracking event: %@", error);
     }
     
 //    BOOL dispatched = [[GANTracker sharedTracker] dispatch];

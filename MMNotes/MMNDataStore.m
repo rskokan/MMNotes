@@ -128,7 +128,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
                                          URL:storeURL
                                      options:options
                                        error:&error]) {
-            //            [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+            //            [NSException raise:@"DB open failed" format:@"Reason: %@", error];
             NSLog(@"Could not open database. Will try to remove old DB files and open again.");
             NSURL *transLogURL = [ubiContainer URLByAppendingPathComponent:TRANS_LOG_NAME];
             [self removeICloudDBStore:storeURL withTransLog:transLogURL];
@@ -138,7 +138,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
                                          options:nil
                                            error:&error]) {
                 NSLog(@"DB opening failed again, exiting");
-                [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+                [NSException raise:@"DB open failed" format:@"Reason: %@", error];
             }
         }
         
@@ -151,7 +151,7 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
                                          URL:storeURL
                                      options:nil
                                        error:&error]) {
-            [NSException raise:@"DB open failed" format:@"Reason: %@", [error localizedDescription]];
+            [NSException raise:@"DB open failed" format:@"Reason: %@", error];
         }
         
     }
@@ -201,18 +201,18 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
                                   withIntermediateDirectories:YES
                                                    attributes:nil
                                                         error:&error]) {
-        NSLog(@"Error creating data directory in the ubiquitous container: %@", [error localizedDescription]);
+        NSLog(@"Error creating data directory in the ubiquitous container: %@", error);
     };
     
     return [nosyncUbiDir URLByAppendingPathComponent:DB_STORE_NAME];
 }
 
 - (BOOL)saveChanges {
-    NSError *err;
-    BOOL success = [ctx save:&err];
+    NSError *error;
+    BOOL success = [ctx save:&error];
     
     if (!success) {
-        NSLog(@"Error saving data: %@.\n Trying to re-open DB (perhaps iCloud was disabled)", [err localizedDescription]);
+        NSLog(@"Error saving data: %@.\n Trying to re-open DB (perhaps iCloud was disabled)", error);
         // TODO: iOS 6 will have NSUbiquityIdentityDidChangeNotification to detect iCloud account changes
         [ctx reset];
         [self openDB];
@@ -242,10 +242,10 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
     [req setSortDescriptors:[NSArray arrayWithObject:sort]];
     
-    NSError *err;
-    NSArray *res = [ctx executeFetchRequest:req error:&err];
+    NSError *error;
+    NSArray *res = [ctx executeFetchRequest:req error:&error];
     if (!res) {
-        [NSException raise:@"Fetch failed" format:@"Entity: %@, reason: %@", name, [err localizedDescription]];
+        [NSException raise:@"Fetch failed" format:@"Entity: %@, reason: %@", name, error];
     }
     
     return res;

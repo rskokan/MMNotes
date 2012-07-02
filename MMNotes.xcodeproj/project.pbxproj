@@ -175,7 +175,6 @@
 		BF158A571576273400CDBE21 = {
 			isa = PBXGroup;
 			children = (
-				BF7514F3159B463D0051F4AF /* libsqlite3.0.dylib */,
 				BF158A6C1576273400CDBE21 /* MMNotes */,
 				BF158A651576273400CDBE21 /* Frameworks */,
 				BF158A631576273400CDBE21 /* Products */,
@@ -193,6 +192,7 @@
 		BF158A651576273400CDBE21 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF7514F3159B463D0051F4AF /* libsqlite3.0.dylib */,
 				BF7514EC159B44E10051F4AF /* GoogleAnalytics */,
 				BF7514ED159B45100051F4AF /* CFNetwork.framework */,
 				BFEA2228158F389900E11DF6 /* iAd.framework */,
@@ -209,15 +209,13 @@
 		BF158A6C1576273400CDBE21 /* MMNotes */ = {
 			isa = PBXGroup;
 			children = (
-				BF7BAA0B158C910D005E77DF /* MMNotes.entitlements */,
 				BFE4964A157D40AE0039B213 /* Images */,
+				BF64702615A19DF200B7321F /* Google Analytics */,
 				BF158AAB15767E5800CDBE21 /* VC */,
 				BF158AAA15767E3B00CDBE21 /* Store */,
 				BF158AA915767E3300CDBE21 /* Model */,
 				BF158A751576273400CDBE21 /* MMNAppDelegate.h */,
 				BF158A761576273400CDBE21 /* MMNAppDelegate.m */,
-				BF7514F6159B4FC80051F4AF /* GAUtils.h */,
-				BF7514F7159B4FC80051F4AF /* GAUtils.m */,
 				BF158A6D1576273400CDBE21 /* Supporting Files */,
 			);
 			path = MMNotes;
@@ -237,6 +235,7 @@
 		BF158AA915767E3300CDBE21 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				BF7BAA0B158C910D005E77DF /* MMNotes.entitlements */,
 				BF158A8315764D4400CDBE21 /* MMNotes.xcdatamodeld */,
 				BF158AA615766B6300CDBE21 /* MMNNote.h */,
 				BF158AA715766B6300CDBE21 /* MMNNote.m */,
@@ -283,6 +282,15 @@
 				BFB1C616158F8A3C008C1377 /* SettingsViewController.xib */,
 			);
 			name = VC;
+			sourceTree = "<group>";
+		};
+		BF64702615A19DF200B7321F /* Google Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				BF7514F6159B4FC80051F4AF /* GAUtils.h */,
+				BF7514F7159B4FC80051F4AF /* GAUtils.m */,
+			);
+			name = "Google Analytics";
 			sourceTree = "<group>";
 		};
 		BF7514EC159B44E10051F4AF /* GoogleAnalytics */ = {

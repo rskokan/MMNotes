@@ -193,7 +193,7 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
 }
 
 - (void)failedTransaction:(SKPaymentTransaction *) transaction {
-    NSString *msg = [NSString stringWithFormat:@"Pro version purchase failed: %@", transaction.error.localizedDescription];
+    NSString *msg = [NSString stringWithFormat:@"Pro version purchase failed: %@", transaction.error];
     NSLog(@"%@", msg);
     
     if (transaction.error.code != SKErrorPaymentCancelled) {
@@ -203,7 +203,7 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
     
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     
-    [[GAUtils sharedUtils] trackEventWithCategory:@"Purchase" action:@"Purchase failed" label:transaction.error.localizedDescription];
+    [[GAUtils sharedUtils] trackEventWithCategory:@"Purchase" action:@"Purchase failed" label:transaction.error.description];
 }
 
 // The user has the Pro version (either just purchased or restored).
