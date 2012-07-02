@@ -13,6 +13,7 @@
 @class MMNNote;
 
 typedef enum {
+    TagsListViewControllerModeNone,
     TagsListViewControllerModeView,
     TagsListViewControllerModeAdd,
     TagsListViewControllerModeSelect

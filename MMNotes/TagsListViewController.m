@@ -17,6 +17,9 @@
 @implementation TagsListViewController
 {
     ADBannerView *_bannerView;
+    
+    // Keeps history of the previous mode. E.g. to know that we switched from Tag selection for a note to Adding new tag (would be more elegant with a stack impl.)
+    TagsListViewControllerMode _oldMode;
 }
 
 @synthesize mode = _mode, currentTag = _currentTag, note = _note;
@@ -27,6 +30,7 @@
     if (self) {
         kMMNIndexPathZero = [NSIndexPath indexPathForRow:0 inSection:0];
         _mode = m;
+        _oldMode = TagsListViewControllerModeNone;
         NSString *title;
         if (m == TagsListViewControllerModeSelect) {
             title = @"Select Tags";
@@ -39,7 +43,7 @@
             [self displayStandardModeBarButtonItems];
         }
         [[self navigationItem] setTitle:title];
-//        [self setTitle:title];
+        //        [self setTitle:title];
         [[self tabBarItem] setTitle:@"Tags"];
         [[self tabBarItem] setImage:[UIImage imageNamed:@"tag_tabbar"]];
     }
@@ -54,6 +58,18 @@
 // Must always override super's designated initializer.
 - (id)initWithStyle:(UITableViewStyle)style {
     return [self init];
+}
+
+- (void)setMode:(TagsListViewControllerMode)mode {
+    // Keep history of the current mode so that we can restore it
+    _oldMode = _mode;
+    
+    _mode = mode;
+}
+
+- (void)restorePreviousMode {
+    _mode = _oldMode;
+    _oldMode = TagsListViewControllerModeNone;
 }
 
 - (void)dealloc {
@@ -78,22 +94,26 @@
     [[self tableView] reloadData];
 }
 
+- (void)updateBarButtons {
+    
+}
+
 - (void)displayAddTagBarButton {
     UIBarButtonItem *bbiAdd = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
                                UIBarButtonSystemItemAdd target:self action:@selector(addNewTag:)];
     [[self navigationItem] setRightBarButtonItem:bbiAdd];
 }
 
-// In the tag selection mode no special buttons need to be displayed. Just the standard navigation one to go back.
+// In the tag selection mode, we display the standard navigation button to go back and a Add button to create a new tag (for convenience here)
 - (void)displaySelectModeBarButtonItems {
     [[self navigationItem] setLeftBarButtonItem:nil];
-    [[self navigationItem] setRightBarButtonItem:nil];
+    [self displayAddTagBarButton];
 }
 
 // Displays Edit - Add bar buttons, for standard mode
 - (void)displayStandardModeBarButtonItems {
     [[self navigationItem] setLeftBarButtonItem:[self editButtonItem]];
-    [self displayAddTagBarButton];    
+    [self displayAddTagBarButton];
 }
 
 // Displays Cancel - Done bar buttons, for the mode when adding a new tag
@@ -220,9 +240,18 @@
     
     [[self currentTag] setName:trimmedTagText];
     [[MMNDataStore sharedStore] ensureUniqueTagName:[self currentTag]];
+    
+    if (_oldMode == TagsListViewControllerModeSelect) {
+        [self restorePreviousMode];
+        [self displaySelectModeBarButtonItems];
+        [[self note] addTagsObject:[self currentTag]];
+    } else {
+        [self setMode:TagsListViewControllerModeView];
+        [self displayStandardModeBarButtonItems];
+    }
+    
     [[MMNDataStore sharedStore] saveChanges];
-    [self setMode:TagsListViewControllerModeView];
-    [self displayStandardModeBarButtonItems];
+    
     [[self tableView] reloadData];
 }
 
@@ -231,10 +260,17 @@
 // Other rows shouln't be changed so no need to reload the entire table.
 - (void)cancelAddingNewTag:(id)sender {
     [[MMNDataStore sharedStore] removeTag:[self currentTag]];
-    [self setMode:TagsListViewControllerModeView];
+    
+    if (_oldMode == TagsListViewControllerModeSelect) {
+        [self restorePreviousMode];
+        [self displaySelectModeBarButtonItems];
+    } else {
+        [self setMode:TagsListViewControllerModeView];
+        [self displayStandardModeBarButtonItems];
+    }
+    
     [[self tableView] endEditing:YES];
     [[self tableView] deleteRowsAtIndexPaths:[NSArray arrayWithObject:kMMNIndexPathZero] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self displayStandardModeBarButtonItems];
 }
 
 - (IBAction)addNewTag:(id)sender {
