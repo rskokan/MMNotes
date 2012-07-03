@@ -41,6 +41,9 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
     self.window.backgroundColor = [UIColor whiteColor];
     // Override point for customization after application launch.
     
+    // Create the store and open the DB in advance (it's in background)
+    [MMNDataStore sharedStore];
+    
     TagsListViewController *tagsListVC = [[TagsListViewController alloc] initWithMode:TagsListViewControllerModeView];
     UINavigationController *tagsNavVC = [[UINavigationController alloc] initWithRootViewController:tagsListVC];
     
