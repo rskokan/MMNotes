@@ -12,6 +12,9 @@
 NSString * const MMNotesProIdentifier = @"MMNotesPro";
 NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPrefKey";
 
+NSString * const kForumURLString = @"https://groups.google.com/forum/?fromgroups#!forum/mmnotes";
+NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
+
 @interface SettingsViewController ()
 
 @end
@@ -22,6 +25,8 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
 }
 
 @synthesize buyButton;
+@synthesize activityIndicator;
+@synthesize buyProLabel;
 
 + (void)initialize {
     // Store default temporary preferences (in the registration domain) indicating that the Pro version has not been bought yet; used if the app is launched for the 1st time and there are no persistent preferences in the application domain.
@@ -52,12 +57,13 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
 - (void)updateBuyButton
 {
     if ([SettingsViewController isProVersion]) {
-        [[self buyButton] setTitle:@"You have the Pro version" forState:UIControlStateNormal];
+        [[self buyProLabel] setText:@"You have the Pro version. Thank you!"];
+        [[self buyButton] setHidden:YES];
         [[self buyButton] setEnabled:NO];
         
     } else {
         if ([SKPaymentQueue canMakePayments]) {
-            [[self buyButton] setTitle:@"Buy the Pro version" forState:UIControlStateNormal];
+            [[self buyButton] setTitle:@"Buy/Restore the Pro version" forState:UIControlStateNormal];
             [[self buyButton] setEnabled:YES];
         } else {
             [[self buyButton] setTitle:@"Purchases are disabled on your device" forState:UIControlStateNormal];
@@ -86,6 +92,8 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
 {
     [self setBuyButton:nil];
     activityIndicator = nil;
+    [self setActivityIndicator:nil];
+    [self setBuyProLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -114,6 +122,26 @@ NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPre
     [self requestProductData];
     
     [[GAUtils sharedUtils] trackEventWithCategory:@"Purchase" action:@"Buy botton tapped" label:nil];
+}
+
+- (IBAction)userGuideButtonTapped:(id)sender {
+    NSURLRequest *forumURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:kUserGuideURLString]];
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+    [webView loadRequest:forumURLRequest];
+    
+    UIViewController *webVC = [[UIViewController alloc] init];
+    [webVC.view addSubview:webView];
+    [[self navigationController] pushViewController:webVC animated:YES];
+}
+
+- (IBAction)forumButtonTapped:(id)sender {
+    NSURLRequest *forumURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:kForumURLString]];
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+    [webView loadRequest:forumURLRequest];
+    
+    UIViewController *webVC = [[UIViewController alloc] init];
+    [webVC.view addSubview:webView];
+    [[self navigationController] pushViewController:webVC animated:YES];
 }
 
 - (void) requestProductData

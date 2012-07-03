@@ -51,8 +51,9 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
     UINavigationController *favsNavVC = [[UINavigationController alloc] initWithRootViewController:favsListVC];
     
     SettingsViewController *settingsVC = [[SettingsViewController alloc] init];
+    UINavigationController *settingsNavVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
     
-    NSArray *vcs = [NSArray arrayWithObjects:tagsNavVC, notesNavVC, favsNavVC, settingsVC, nil];
+    NSArray *vcs = [NSArray arrayWithObjects:tagsNavVC, notesNavVC, favsNavVC, settingsNavVC, nil];
     tabVC = [[UITabBarController alloc] init];
     [tabVC setViewControllers:vcs];
     [tabVC setDelegate:self];
@@ -75,7 +76,7 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
         _bannerView.delegate = self;
         
         // Don't display the ad banner in Settings
-        if (![selectedNavVC isKindOfClass:[SettingsViewController class]]) {
+        if (![[selectedNavVC.viewControllers objectAtIndex:0] isKindOfClass:[SettingsViewController class]]) {
             _currentIAdTabController = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
         }
     }
@@ -163,12 +164,13 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
         
     } else {
         // Don't display the ad banner in Settings
-        if ([viewController isKindOfClass:[SettingsViewController class]]) {
+        // All tabs have UINavigationControllers, incl. the Settings tab
+        // ViewController in the tab is a UINavigationController. We are interrested in its root [0] element
+        UINavigationController *selectedNavVC = (UINavigationController *)viewController;
+        if ([[selectedNavVC.viewControllers objectAtIndex:0] isKindOfClass:[SettingsViewController class]]) {
             return;
         }
         
-        // viewController in the tab is a UINavigationController. We are interrested in its root [0] element
-        UINavigationController *selectedNavVC = (UINavigationController *)viewController;
         UIViewController<BannerViewContainer> *vcInTab = (UIViewController<BannerViewContainer> *) [selectedNavVC.viewControllers objectAtIndex:0];
         
         if (_currentIAdTabController == vcInTab) {
