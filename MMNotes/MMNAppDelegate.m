@@ -11,6 +11,7 @@
 #import "TagsListViewController.h"
 #import "SettingsViewController.h"
 #import "MMNDataStore.h"
+#import "Crittercism.h"
 #import "GAUtils.h"
 
 NSString * const MMNNotesMainTabIndexPrefKey = @"MMNNotesMainTabIndexPrefKey";
@@ -62,6 +63,10 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
     [tabVC setSelectedIndex:selectedTabIndex];
     
     UINavigationController *selectedNavVC = (UINavigationController *)tabVC.selectedViewController;
+    
+    [Crittercism initWithAppID: @"4ff1e5306c36f90e2e000002"
+                        andKey:@"qb20nirjn6f3iv8uysmcktjt57hh"
+                     andSecret:@"hns2u1qbvxkr8rygbw7603dscjionpuz"];
     
     // The ADBannerView will fix up the given size, we just want to ensure it is created at a location off the bottom of the screen.
     // This ensures that the first animation doesn't come in from the top of the screen.
