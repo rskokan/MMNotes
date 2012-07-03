@@ -53,8 +53,10 @@
                 break;
                 
             case NotesListViewControllerModeNotesForTag: {
+                UIBarButtonItem *bbiAdd = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
+                                           UIBarButtonSystemItemAdd target:self action:@selector(addNewNote:)];
                 [[self navigationItem] setLeftBarButtonItem:nil];
-                [[self navigationItem] setRightBarButtonItem:nil];
+                [[self navigationItem] setRightBarButtonItem:bbiAdd];
                 title = [NSString stringWithFormat:@"Notes Tagged %@", [[self tag] name]];
                 
                 // Not at the top level, hide the main tabbar
@@ -192,6 +194,7 @@
 
 - (IBAction)addNewNote:(id)sender {
     MMNNote *newNote = [[MMNDataStore sharedStore] createNote];
+    [newNote addTagsObject:[self tag]];
     NoteDetailViewController *detailVC = [[NoteDetailViewController alloc] initForNewNote:YES];
     [detailVC setNote:newNote];
     [detailVC setDismissBlock:^{
