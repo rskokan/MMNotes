@@ -26,7 +26,8 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
 
 @synthesize buyButton;
 @synthesize activityIndicator;
-@synthesize buyProLabel;
+@synthesize buySectionView;
+@synthesize infoSectionView;
 
 + (void)initialize {
     // Store default temporary preferences (in the registration domain) indicating that the Pro version has not been bought yet; used if the app is launched for the 1st time and there are no persistent preferences in the application domain.
@@ -54,12 +55,13 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
     return self;
 }
 
-- (void)updateBuyButton
+- (void)updateBuySection
 {
     if ([SettingsViewController isProVersion]) {
-        [[self buyProLabel] setText:@"You have the Pro version. Thank you!"];
-        [[self buyButton] setHidden:YES];
-        [[self buyButton] setEnabled:NO];
+        [UIView animateWithDuration:0.25 animations:^{
+            [[self infoSectionView] setFrame:[[self buySectionView] frame]];
+            [[self buySectionView] removeFromSuperview];
+        }];
         
     } else {
         if ([SKPaymentQueue canMakePayments]) {
@@ -79,13 +81,17 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        self.buySectionView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        self.infoSectionView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     } else {
         self.view.backgroundColor = [UIColor lightGrayColor];
+        self.buySectionView.backgroundColor = [UIColor lightGrayColor];
+        self.infoSectionView.backgroundColor = [UIColor lightGrayColor];
     }
     
     activityIndicator.hidden = YES;
     
-    [self updateBuyButton];
+    [self updateBuySection];
 }
 
 - (void)viewDidUnload
@@ -93,7 +99,8 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
     [self setBuyButton:nil];
     activityIndicator = nil;
     [self setActivityIndicator:nil];
-    [self setBuyProLabel:nil];
+    [self setBuySectionView:nil];
+    [self setInfoSectionView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -239,7 +246,7 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
 - (void)updateToProVersion {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:MMNNotesProVersionBoughtPrefKey];
-    [self updateBuyButton];
+    [self updateBuySection];
 }
 
 @end

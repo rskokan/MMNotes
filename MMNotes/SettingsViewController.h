@@ -18,7 +18,11 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *buyButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
-@property (weak, nonatomic) IBOutlet UILabel *buyProLabel;
+
+@property (weak, nonatomic) IBOutlet UIView *buySectionView;
+@property (weak, nonatomic) IBOutlet UIView *infoSectionView;
+
+
 
 // Indicates whether the user has bought the Pro version
 + (BOOL)isProVersion;
