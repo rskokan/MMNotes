@@ -355,10 +355,27 @@
     }
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [UIView animateWithDuration:1.0 animations:^{
+        if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {
+            [_bannerView setCurrentContentSizeIdentifier:ADBannerContentSizeIdentifierPortrait];
+        } else {
+            [_bannerView setCurrentContentSizeIdentifier:ADBannerContentSizeIdentifierLandscape];
+        } 
+    }];
+}
+
 - (void)showBannerView:(ADBannerView *)bannerView animated:(BOOL)animated
 {
     _bannerView = bannerView;
     self.tableView.tableFooterView = bannerView;
+    
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (interfaceOrientation == UIInterfaceOrientationPortrait) {
+        [_bannerView setCurrentContentSizeIdentifier:ADBannerContentSizeIdentifierPortrait];
+    } else {
+        [_bannerView setCurrentContentSizeIdentifier:ADBannerContentSizeIdentifierLandscape];
+    } 
 }
 
 - (void)hideBannerView:(ADBannerView *)bannerView animated:(BOOL)animated
