@@ -355,15 +355,12 @@
         
         NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
         NSTimeInterval animationDuration;
-        [animationDurationValue getValue:&animationDuration];
-        [UIView beginAnimations:@"ScrollForKeyboard" context:NULL];
-        [UIView setAnimationDuration:animationDuration];
-        
-        
-        CGRect newVisibleRect = CGRectMake(0.0, newVisibleOriginY, visibleRect.size.width, visibleRect.size.height);
-        
-        [scrollView scrollRectToVisible:newVisibleRect animated:YES];
-        [UIView commitAnimations];
+        [animationDurationValue getValue:&animationDuration];       
+        [UIView animateWithDuration:animationDuration animations:^{
+            CGRect newVisibleRect = CGRectMake(0.0, newVisibleOriginY, visibleRect.size.width, visibleRect.size.height);
+            
+            [scrollView scrollRectToVisible:newVisibleRect animated:YES]; 
+        }];
     }
     
     [scrollView flashScrollIndicators];
@@ -375,13 +372,10 @@
     NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
     NSTimeInterval animationDuration;
     [animationDurationValue getValue:&animationDuration];
-    [UIView beginAnimations:@"ScrollForKeyboard" context:NULL];
-    [UIView setAnimationDuration:animationDuration];
-    
-    CGRect visibleRect = [[self view] frame];
-    scrollView.contentSize = visibleRect.size;
-    
-    [UIView commitAnimations];
+    [UIView animateWithDuration:animationDuration animations:^{
+        CGRect visibleRect = [[self view] frame];
+        scrollView.contentSize = visibleRect.size;   
+    }];
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
