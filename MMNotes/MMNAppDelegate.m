@@ -91,7 +91,13 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
         WelcomeViewController *welcomeVC = [[WelcomeViewController alloc] init];
         [welcomeVC setModalPresentationStyle:UIModalPresentationFormSheet];
         UIViewController *topmostVC = [selectedNavVC.viewControllers lastObject];
-        [topmostVC presentViewController:welcomeVC animated:YES completion:NULL];
+    
+        // Present next run loop. Prevents "Unbalanced calls to begin/end appearance transitions for UITabBarController"
+        double delayInSeconds = 0.1;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [topmostVC presentViewController:welcomeVC animated:YES completion:NULL]; 
+        });
     }
     
     return YES;
