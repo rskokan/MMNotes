@@ -22,7 +22,9 @@
 @property (weak, nonatomic) IBOutlet UIView *buySectionView;
 @property (weak, nonatomic) IBOutlet UIView *infoSectionView;
 
-
+// Determines from the stored previous version and the current version whether the app of this version has been started for the first time.
+// It has a side effect: updates the stored version to the current one.
+@property (nonatomic, readonly, getter=isFirstTimeLaunchForCurrentVersion) BOOL firstTimeLaunchForCurrentVersion;
 
 // Indicates whether the user has bought the Pro version
 + (BOOL)isProVersion;

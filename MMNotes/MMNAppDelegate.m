@@ -11,6 +11,7 @@
 #import "TagsListViewController.h"
 #import "SettingsViewController.h"
 #import "MMNDataStore.h"
+#import "WelcomeViewController.h"
 #import "Crittercism.h"
 #import "GAUtils.h"
 
@@ -85,6 +86,14 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
     }
     
     [self.window makeKeyAndVisible];
+    
+    if ([settingsVC isFirstTimeLaunchForCurrentVersion]) {
+        WelcomeViewController *welcomeVC = [[WelcomeViewController alloc] init];
+        [welcomeVC setModalPresentationStyle:UIModalPresentationFormSheet];
+        UIViewController *topmostVC = [selectedNavVC.viewControllers lastObject];
+        [topmostVC presentViewController:welcomeVC animated:YES completion:NULL];
+    }
+    
     return YES;
 }
 

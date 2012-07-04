@@ -202,7 +202,7 @@
     }];
     UINavigationController *navCtrl = [[UINavigationController alloc] initWithRootViewController:detailVC];
     [navCtrl setModalPresentationStyle:UIModalPresentationFormSheet];
-    [self presentViewController:navCtrl animated:YES completion:nil];
+    [self presentViewController:navCtrl animated:YES completion:NULL];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {

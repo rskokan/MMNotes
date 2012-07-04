@@ -303,7 +303,7 @@
         [imagePickerPopover setDelegate:self];
         [imagePickerPopover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     } else {
-        [self presentViewController:imagePicker animated:YES completion:nil];
+        [self presentViewController:imagePicker animated:YES completion:NULL];
     }
 }
 

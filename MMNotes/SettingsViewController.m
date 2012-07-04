@@ -12,6 +12,8 @@
 NSString * const MMNotesProIdentifier = @"MMNotesPro";
 NSString * const MMNNotesProVersionBoughtPrefKey = @"MMNNotesProVersionBoughtPrefKey";
 
+NSString * const MMNotesVersionPrefKey = @"MMNotesVersionPrefKey";
+
 NSString * const kForumURLString = @"https://groups.google.com/forum/?fromgroups#!forum/mmnotes";
 NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
 
@@ -28,6 +30,7 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
 @synthesize activityIndicator;
 @synthesize buySectionView;
 @synthesize infoSectionView;
+@synthesize firstTimeLaunchForCurrentVersion = _firstTimeLaunchForCurrentVersion;
 
 + (void)initialize {
     // Store default temporary preferences (in the registration domain) indicating that the Pro version has not been bought yet; used if the app is launched for the 1st time and there are no persistent preferences in the application domain.
@@ -37,6 +40,18 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
 
 + (BOOL)isProVersion {
     return [[NSUserDefaults standardUserDefaults] boolForKey:MMNNotesProVersionBoughtPrefKey];
+}
+
+- (BOOL)isFirstTimeLaunchForCurrentVersion {
+    NSString *currentVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    NSString *previousVersion = [[NSUserDefaults standardUserDefaults] stringForKey:MMNotesVersionPrefKey];
+    
+    BOOL res = ![currentVersion isEqualToString:previousVersion];
+    NSLog(@"%@: currentVersion=%@, previousVersion=%@ => %d", NSStringFromSelector(_cmd), currentVersion, previousVersion, res);
+    
+    [[NSUserDefaults standardUserDefaults] setObject:currentVersion forKey:MMNotesVersionPrefKey];
+    
+    return res;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -55,10 +70,11 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
     return self;
 }
 
-- (void)updateBuySection
+- (void)updateBuySectionAnimated:(BOOL)animated
 {
     if ([SettingsViewController isProVersion]) {
-        [UIView animateWithDuration:0.25 animations:^{
+        NSTimeInterval animationDuration = (animated ? 0.25 : 0);
+        [UIView animateWithDuration:animationDuration animations:^{
             [[self infoSectionView] setFrame:[[self buySectionView] frame]];
             [[self buySectionView] removeFromSuperview];
         }];
@@ -79,19 +95,9 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
-        self.buySectionView.backgroundColor = [UIColor groupTableViewBackgroundColor];
-        self.infoSectionView.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    } else {
-        self.view.backgroundColor = [UIColor lightGrayColor];
-        self.buySectionView.backgroundColor = [UIColor lightGrayColor];
-        self.infoSectionView.backgroundColor = [UIColor lightGrayColor];
-    }
-    
     activityIndicator.hidden = YES;
     
-    [self updateBuySection];
+    [self updateBuySectionAnimated:NO];
 }
 
 - (void)viewDidUnload
@@ -246,7 +252,7 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
 - (void)updateToProVersion {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:MMNNotesProVersionBoughtPrefKey];
-    [self updateBuySection];
+    [self updateBuySectionAnimated:YES];
 }
 
 @end

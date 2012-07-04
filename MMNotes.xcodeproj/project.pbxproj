@@ -115,6 +115,8 @@
 		BFCC226A15A226E900738BC7 /* CrittercismRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCC222015A226E900738BC7 /* CrittercismRootViewController.xib */; };
 		BFCC226B15A226E900738BC7 /* CrittercismViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCC222115A226E900738BC7 /* CrittercismViewController.xib */; };
 		BFCC226E15A2273900738BC7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFCC226D15A2273900738BC7 /* SystemConfiguration.framework */; };
+		BFCC227E15A4784C00738BC7 /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFCC227C15A4784C00738BC7 /* WelcomeViewController.m */; };
+		BFCC227F15A4784C00738BC7 /* WelcomeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCC227D15A4784C00738BC7 /* WelcomeViewController.xib */; };
 		BFE49649157BB7F00039B213 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFE49648157BB7EF0039B213 /* QuartzCore.framework */; };
 		BFE4964D157D40DB0039B213 /* star_toolbar.png in Resources */ = {isa = PBXBuildFile; fileRef = BFE4964B157D40DB0039B213 /* star_toolbar.png */; };
 		BFE4964E157D40DB0039B213 /* star_toolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFE4964C157D40DB0039B213 /* star_toolbar@2x.png */; };
@@ -301,6 +303,9 @@
 		BFCC222015A226E900738BC7 /* CrittercismRootViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrittercismRootViewController.xib; sourceTree = "<group>"; };
 		BFCC222115A226E900738BC7 /* CrittercismViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrittercismViewController.xib; sourceTree = "<group>"; };
 		BFCC226D15A2273900738BC7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		BFCC227B15A4784C00738BC7 /* WelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
+		BFCC227C15A4784C00738BC7 /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
+		BFCC227D15A4784C00738BC7 /* WelcomeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WelcomeViewController.xib; sourceTree = "<group>"; };
 		BFE49648157BB7EF0039B213 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		BFE4964B157D40DB0039B213 /* star_toolbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_toolbar.png; sourceTree = "<group>"; };
 		BFE4964C157D40DB0039B213 /* star_toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star_toolbar@2x.png"; sourceTree = "<group>"; };
@@ -463,6 +468,9 @@
 				BFB1C614158F8A3C008C1377 /* SettingsViewController.h */,
 				BFB1C615158F8A3C008C1377 /* SettingsViewController.m */,
 				BFB1C616158F8A3C008C1377 /* SettingsViewController.xib */,
+				BFCC227B15A4784C00738BC7 /* WelcomeViewController.h */,
+				BFCC227C15A4784C00738BC7 /* WelcomeViewController.m */,
+				BFCC227D15A4784C00738BC7 /* WelcomeViewController.xib */,
 			);
 			name = VC;
 			sourceTree = "<group>";
@@ -813,6 +821,7 @@
 				BFCC226915A226E900738BC7 /* CrittercismGridViewController.xib in Resources */,
 				BFCC226A15A226E900738BC7 /* CrittercismRootViewController.xib in Resources */,
 				BFCC226B15A226E900738BC7 /* CrittercismViewController.xib in Resources */,
+				BFCC227F15A4784C00738BC7 /* WelcomeViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -839,6 +848,7 @@
 				BFB52C9E15823B960072AF88 /* NoteListCell.m in Sources */,
 				BFB1C617158F8A3C008C1377 /* SettingsViewController.m in Sources */,
 				BF7514F8159B4FC90051F4AF /* GAUtils.m in Sources */,
+				BFCC227E15A4784C00738BC7 /* WelcomeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
