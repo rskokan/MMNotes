@@ -19,6 +19,10 @@
 @end
 
 @implementation NoteDetailViewController
+{
+    // Hold the original bodyField frame before the keyboard was shawn so that it can be restored after the keyboard is hidden
+    CGRect _originalBodyFieldFrame;
+}
 
 @synthesize note = _note, dismissBlock = _dismissBlock, isNew = _isNew;
 
@@ -328,54 +332,64 @@
 }
 
 // Called when the UIKeyboardDidShowNotification is sent.
+// Scrolls the overall screen up and shrinks the textView not to be obscured by the keyboard.
 - (void)keyboardWasShown:(NSNotification *)notif {
+    // On iPhone, scroll the visible frame to the cursor position
     NSDictionary *info = [notif userInfo];
     CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     // conversion from screen to view coordinates
     kbRect = [self.view convertRect:kbRect fromView:nil];
     
-    CGRect visibleRect = [[self view] frame];
-    CGRect extendedRect = CGRectMake(0.0, 0.0, visibleRect.size.width, visibleRect.size.height + kbRect.size.height);
-    scrollView.contentSize = extendedRect.size;
+    CGFloat newVisibleOriginY = 0.0;
     
-    // On iPhone, scroll the visible frame to the cursor position
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+    // For iPhones in landscape mode scroll the view
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
         // Either titleField or bodyField
         UIView<UITextInput> *activeTextField = (UIView<UITextInput> *)activeField;
-        
-        CGFloat newVisibleOriginY;
-        if (activeTextField.selectedTextRange != nil) {
-            CGPoint cursorPosition = [activeTextField caretRectForPosition:activeTextField.selectedTextRange.start].origin;
-            newVisibleOriginY = activeTextField.frame.origin.y + cursorPosition.y;
-        } else {
-            // Tapped in bodyField, using the location from the tap
-            newVisibleOriginY = activeTextField.frame.origin.y + tappedLocationInBodyField.y;
-            NSLog(@"Using tappedLocationInBodyField.y=%0.0f", tappedLocationInBodyField.y);
-        }
+        newVisibleOriginY = activeTextField.frame.origin.y - 20; // let some space above        
+        CGRect visibleRect = [[self view] frame];
+        CGRect extendedRect = CGRectMake(0.0, 0.0, visibleRect.size.width, visibleRect.size.height + kbRect.size.height - self.navigationController.toolbar.frame.size.height);
+        CGRect newVisibleRect = CGRectMake(0.0, newVisibleOriginY, visibleRect.size.width, visibleRect.size.height);
         
         NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
         NSTimeInterval animationDuration;
         [animationDurationValue getValue:&animationDuration];       
         [UIView animateWithDuration:animationDuration animations:^{
-            CGRect newVisibleRect = CGRectMake(0.0, newVisibleOriginY, visibleRect.size.width, visibleRect.size.height);
-            
-            [scrollView scrollRectToVisible:newVisibleRect animated:YES]; 
+            scrollView.contentSize = extendedRect.size;
+            [scrollView scrollRectToVisible:newVisibleRect animated:YES];
         }];
+        [scrollView flashScrollIndicators];
     }
     
-    [scrollView flashScrollIndicators];
+    _originalBodyFieldFrame = bodyField.frame;
+    // quick hack...
+    CGFloat newBodyFieldHeight;
+    if (activeField == titleField && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+        newBodyFieldHeight = kbRect.origin.y - /*_originalBodyFieldFrame.origin.y +*/ newVisibleOriginY;
+    } else {
+        newBodyFieldHeight = kbRect.origin.y - _originalBodyFieldFrame.origin.y + newVisibleOriginY;
+    }
+    CGRect newBodyFieldFrame = CGRectMake(_originalBodyFieldFrame.origin.x, _originalBodyFieldFrame.origin.y, _originalBodyFieldFrame.size.width, newBodyFieldHeight);
+    [bodyField setFrame:newBodyFieldFrame];
 }
 
 // Called when the UIKeyboardWillHideNotification is sent
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification {
-    NSDictionary *info = [aNotification userInfo];
-    NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    NSTimeInterval animationDuration;
-    [animationDurationValue getValue:&animationDuration];
-    [UIView animateWithDuration:animationDuration animations:^{
-        CGRect visibleRect = [[self view] frame];
-        scrollView.contentSize = visibleRect.size;   
-    }];
+    [bodyField setFrame:_originalBodyFieldFrame];
+    
+    // Restore the original scroll position - iPhones in landscape only
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+        NSDictionary *info = [aNotification userInfo];
+        NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+        NSTimeInterval animationDuration;
+        [animationDurationValue getValue:&animationDuration];
+        [UIView animateWithDuration:animationDuration animations:^{
+            CGRect visibleRect = [[self view] frame];
+            scrollView.contentSize = visibleRect.size;
+        }];
+    }
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
