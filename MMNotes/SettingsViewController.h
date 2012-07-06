@@ -16,6 +16,9 @@
     
 }
 
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
+
 @property (weak, nonatomic) IBOutlet UIButton *buyButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
@@ -30,6 +33,7 @@
 + (BOOL)isProVersion;
 
 - (IBAction)buyButtonTapped:(id)sender;
+- (IBAction)restoreButtonTapped:(id)sender;
 - (IBAction)userGuideButtonTapped:(id)sender;
 - (IBAction)forumButtonTapped:(id)sender;
 
