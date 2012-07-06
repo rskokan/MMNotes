@@ -17,6 +17,7 @@ const int MMNNoteMaxDisplayTextLength = 20;
 @dynamic title;
 @dynamic body;
 @dynamic isFavorite;
+@dynamic isEncrypted;
 @dynamic dateModified;
 @dynamic order;
 @dynamic tags;

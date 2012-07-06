@@ -123,6 +123,10 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
         [options setObject:TRANS_LOG_NAME forKey:NSPersistentStoreUbiquitousContentNameKey];
         [options setObject:ubiContainer forKey:NSPersistentStoreUbiquitousContentURLKey];
         
+        // Request automatic lightweight migration
+        [options setObject:[NSNumber numberWithBool:YES] forKey:NSMigratePersistentStoresAutomaticallyOption];
+        [options setObject:[NSNumber numberWithBool:YES] forKey:NSInferMappingModelAutomaticallyOption];
+        
         if (![psc addPersistentStoreWithType:NSSQLiteStoreType
                                configuration:nil
                                          URL:storeURL

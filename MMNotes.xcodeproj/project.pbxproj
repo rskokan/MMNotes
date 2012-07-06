@@ -302,6 +302,7 @@
 		BFB52CA015823BAD0072AF88 /* NoteListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteListCell.xib; sourceTree = "<group>"; };
 		BFB52CA2158244220072AF88 /* photo_toolbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photo_toolbar.png; sourceTree = "<group>"; };
 		BFB52CA3158244220072AF88 /* photo_toolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_toolbar@2x.png"; sourceTree = "<group>"; };
+		BFC00E4815A726CF009CBCB8 /* MMNotes v1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "MMNotes v1.1.xcdatamodel"; sourceTree = "<group>"; };
 		BFCC226D15A2273900738BC7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		BFCC227B15A4784C00738BC7 /* WelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
 		BFCC227C15A4784C00738BC7 /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
@@ -1030,9 +1031,10 @@
 		BF158A8315764D4400CDBE21 /* MMNotes.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				BFC00E4815A726CF009CBCB8 /* MMNotes v1.1.xcdatamodel */,
 				BF158A8415764D4400CDBE21 /* MMNotes.xcdatamodel */,
 			);
-			currentVersion = BF158A8415764D4400CDBE21 /* MMNotes.xcdatamodel */;
+			currentVersion = BFC00E4815A726CF009CBCB8 /* MMNotes v1.1.xcdatamodel */;
 			path = MMNotes.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
