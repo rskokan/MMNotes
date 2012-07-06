@@ -205,24 +205,27 @@ NSString * const kUserGuideURLString = @"http://solucs.com/mmnotes/userguide";
 
 - (IBAction)userGuideButtonTapped:(id)sender {
     NSURL *requestURL = [NSURL URLWithString:kUserGuideURLString];
-    NSURLRequest *forumURLRequest = [NSURLRequest requestWithURL:requestURL cachePolicy:NSURLRequestReloadRevalidatingCacheData timeoutInterval:60];
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-    [webView loadRequest:forumURLRequest];
+    [[UIApplication sharedApplication] openURL:requestURL];
     
-    UIViewController *webVC = [[UIViewController alloc] init];
-    [webVC.view addSubview:webView];
-    [[self navigationController] pushViewController:webVC animated:YES];
+//    NSURLRequest *forumURLRequest = [NSURLRequest requestWithURL:requestURL cachePolicy:NSURLRequestReloadRevalidatingCacheData timeoutInterval:60];
+//    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+//    [webView loadRequest:forumURLRequest];
+//    
+//    UIViewController *webVC = [[UIViewController alloc] init];
+//    [webVC.view addSubview:webView];
+//    [[self navigationController] pushViewController:webVC animated:YES];
 }
 
 - (IBAction)forumButtonTapped:(id)sender {
     NSURL *requestURL = [NSURL URLWithString:kForumURLString];
-    NSURLRequest *forumURLRequest = [NSURLRequest requestWithURL:requestURL cachePolicy:NSURLRequestReloadRevalidatingCacheData timeoutInterval:60];
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-    [webView loadRequest:forumURLRequest];
+    [[UIApplication sharedApplication] openURL:requestURL];
     
-    UIViewController *webVC = [[UIViewController alloc] init];
-    [webVC.view addSubview:webView];
-    [[self navigationController] pushViewController:webVC animated:YES];
+//    NSURLRequest *forumURLRequest = [NSURLRequest requestWithURL:requestURL cachePolicy:NSURLRequestReloadRevalidatingCacheData timeoutInterval:60];
+//    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+//    [webView loadRequest:forumURLRequest];
+//    UIViewController *webVC = [[UIViewController alloc] init];
+//    [webVC.view addSubview:webView];
+//    [[self navigationController] pushViewController:webVC animated:YES];
 }
 
 - (void) requestProductData
