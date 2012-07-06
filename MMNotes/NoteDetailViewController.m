@@ -334,7 +334,6 @@
 // Called when the UIKeyboardDidShowNotification is sent.
 // Scrolls the overall screen up and shrinks the textView not to be obscured by the keyboard.
 - (void)keyboardWasShown:(NSNotification *)notif {
-    // On iPhone, scroll the visible frame to the cursor position
     NSDictionary *info = [notif userInfo];
     CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     // conversion from screen to view coordinates
@@ -365,7 +364,7 @@
     _originalBodyFieldFrame = bodyField.frame;
     // quick hack...
     CGFloat newBodyFieldHeight;
-    if (activeField == titleField && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+    if (activeField == titleField && UIInterfaceOrientationIsLandscape(interfaceOrientation) && [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         newBodyFieldHeight = kbRect.origin.y - /*_originalBodyFieldFrame.origin.y +*/ newVisibleOriginY;
     } else {
         newBodyFieldHeight = kbRect.origin.y - _originalBodyFieldFrame.origin.y + newVisibleOriginY;
