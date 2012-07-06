@@ -201,7 +201,9 @@
 
 - (IBAction)addNewNote:(id)sender {
     MMNNote *newNote = [[MMNDataStore sharedStore] createNote];
-    [newNote addTagsObject:[self tag]];
+    if (self.tag) {
+        [newNote addTagsObject:self.tag];
+    }
     NoteDetailViewController *detailVC = [[NoteDetailViewController alloc] initForNewNote:YES];
     [detailVC setNote:newNote];
     [detailVC setDismissBlock:^{
