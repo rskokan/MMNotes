@@ -63,8 +63,9 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
 
 // Merge iCloud content changes
 - (void)contentChange:(NSNotification *)notif {
-    NSLog(@"%@", NSStringFromSelector(_cmd));
+//    NSLog(@"%@", NSStringFromSelector(_cmd));
     [ctx mergeChangesFromContextDidSaveNotification:notif];
+//    NSLog(@"%@: after mergeChangesFromContextDidSaveNotification:" , NSStringFromSelector(_cmd));
     
     // Need to reload cached Notes and Tags: some might have been added or removed
     [self reloadAllData];
@@ -249,7 +250,9 @@ NSString * const TRANS_LOG_NAME = @"mmnotes_trans.log";
     NSError *error;
     NSArray *res = [ctx executeFetchRequest:req error:&error];
     if (!res) {
-        [NSException raise:@"Fetch failed" format:@"Entity: %@, reason: %@", name, error];
+        // Just logging it because of strange behavior on iOS 6 beta 2: https://devforums.apple.com/thread/159147
+        NSLog(@"Fetch failed: Entity: %@, reason: %@", name, error);
+//        [NSException raise:@"Fetch failed" format:@"Entity: %@, reason: %@", name, error];
     }
     
     return res;
