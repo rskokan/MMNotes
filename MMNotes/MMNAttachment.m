@@ -20,7 +20,7 @@
 @dynamic dateModified;
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"[MMNAttachment(type=%d, order=%f]", [self type], [self order]];
+    return [NSString stringWithFormat:@"[MMNAttachment(type=%@, order=%@]", [self type], [self order]];
 }
 
 // Returns the "type" attribute as MMNAttachmentType. It is stored in DB as NSNumber.

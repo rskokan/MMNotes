@@ -18,7 +18,7 @@
 @dynamic notes;
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"[MMNTag(name=%@, dateModified=%@, order=%f]", [self name], [self dateModified], [self order]];
+    return [NSString stringWithFormat:@"[MMNTag(name=%@, dateModified=%@, order=%@]", [self name], [self dateModified], [self order]];
 }
 
 - (void)willSave {

@@ -49,7 +49,7 @@ const int MMNNoteMaxDisplayTextLength = 20;
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"[MMNNote(title=%@, dateModified=%@, order=%f]", [self title], [self dateModified], [self order]];
+    return [NSString stringWithFormat:@"[MMNNote(title=%@, dateModified=%@, order=%@]", [self title], [self dateModified], [self order]];
 }
 
 - (BOOL)hasNoText {
